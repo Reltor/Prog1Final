@@ -119,8 +119,8 @@ class AnomalyTile(MapTile):
         return "A"
         
 class BlackHoleTile(AnomalyTile):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,occupied = True, player = False, boss = False,asciiArt = "", damage = 1000, buff = "",location = (0,0)):
+        super().__init__(occupied,player,boss,asciiArt,damage,buff,location)
         #attributes from AnomalyTile
             #empty/occupied (occupied)
             #player occupied (y/n)
@@ -135,8 +135,8 @@ class BlackHoleTile(AnomalyTile):
         return "H"
     
 class EnemyTile(MapTile):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,occupied = True,player = False,boss = False,asciiArt = "",location = (0,0)):
+        super().__init__(occupied,player,boss,asciiArt,location)
             #attributes from MapTile
                 #empty/occupied (occupied)
                 #player occupied (y/n)
@@ -150,8 +150,8 @@ class EnemyTile(MapTile):
         return "E"
     
 class BossTile(MapTile):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,occupied = True,player = False,boss = True,asciiArt = "",location = (0,0)):
+        super().__init__(occupied,player,boss,asciiArt,location)
             #attributes from MapTile
                 #empty/occupied (occupied)
                 #player occupied (y/n)
@@ -167,8 +167,8 @@ class BossTile(MapTile):
         return "B"
 
 class PlayerTile(MapTile):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,occupied = True,player = True,boss = False,asciiArt = "",location = (0,0)):
+        super().__init__(occupied,player,boss,asciiArt,location)
         #attributes from MapTile
             #empty/occupied (occupied)
             #player occupied (y)
