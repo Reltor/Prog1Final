@@ -1,5 +1,5 @@
 
-#make it so if you haven't fought enough enemies, you are moved away from final boss.
+#make iit so if you haven't fought enough enemies, you are moved away from final boss.
 
 #cheatCODE - PlayerName - Firefly (sets moves to max, all stats as high as possible, enemy counter high enough for final boss, displays coordinate of final boss)
 
