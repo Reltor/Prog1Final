@@ -94,3 +94,4 @@ def main():
             hero = Player(ShipName,HP,PHY,ARM,SPD,ENG,SHD,encounter)
     hero.showStats()
     hero.save()
+    return hero
