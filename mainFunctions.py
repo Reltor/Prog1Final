@@ -45,9 +45,10 @@ def createBoard(rows,columns):
         rowList[coord[1]-1][coord[0]-1] = enemyTile
         print(rowList[coord[1]-1][coord[0]-1])
     for coord in anomalyCoordList:
-        anomalyTile = gameObjects.AnomalyTile()
+        anomalyTile = gameObjects.AnomalyTile(location = coord)
         rowList[coord[1]-1][coord[0]-1] = anomalyTile
         print(rowList[coord[1]-1][coord[0]-1])
+        print(anomalyTile.getLoc())
         
     #randomly place one "major/boss" enemy at another points
     bossCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]

@@ -84,31 +84,37 @@ class Player(Entity):
 #################################
 
 class MapTile(object):
-    def __init__(self):
-        #attributes
-            #empty/occupied (is there an enemy or anomaly here)
-            #player occupied (y/n)
-            #is the boss here (y/n)
-            #location (x,y coordinate)
-        pass
-            #ascii art
+    def __init__(self,occupied = False,player = False,boss = False,asciiArt = "",location = (0,0)):
+        ##### attributes #####
+        #empty/occupied (is there an enemy or anomaly here)
+        self.__occupied = occupied
+        #player occupied (y/n)
+        self.__playerOccupied = player
+        #is the boss here (y/n)
+        self.__bossOccupied = boss
+        #location (x,y coordinate)
+        self.__location = location
+        #ascii art
+        self.__asciiArt = asciiArt
     def __str__ (self):
         return "M"
-        pass
+    def getLoc(self):
+        return self.__location
         
 class AnomalyTile(MapTile):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,occupied = True, player = False, boss = False,asciiArt = "", damage = 2, buff = "",location = (0,0)):
+        super().__init__(occupied,player,boss,asciiArt,location)
             #attributes from MapTile
                 #empty/occupied (occupied)
                 #player occupied (y/n)
                 #is the boss here (n)
                 #location
                 #ascii art
-            #seperate attributes
-                #damage (how much damage it would do the the player landing on it)
-                #debuff/buff (any buff or de-buff it would apply
-        pass
+        #### seperate attributes ####
+        #damage (how much damage it would do the the player landing on it)
+        self.__damage = damage
+        #debuff/buff (any buff or de-buff it would apply
+        self.__buff = buff
     def __str__(self):
         return "A"
         
@@ -194,6 +200,8 @@ class Board(object):
         #useful if an enemy dies, or an anomaly is cleared
         #or literally any time the player changes position
         self.__board[yCoord-1][xCoord-1] = newTile
+
+
 #################################
 ######## Misc Objects ###########
 #################################            
