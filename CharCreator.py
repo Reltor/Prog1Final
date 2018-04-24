@@ -16,7 +16,6 @@ def main():
         ENG = 500
         SHD = 500
         encounter = 10
-        hero = gameObjects.Player(HP,PHY,ARM,SPD,ENG,SHD,encounter,ShipName,Pclass)
         #hero.save()
     else:
         if Pclass == "corvette":
@@ -27,7 +26,6 @@ def main():
             ENG = random.randint(10,15)
             SHD = random.randint(15,20)
             encounter = 0
-            hero = gameObjects.Player(HP,PHY,ARM,SPD,ENG,SHD,encounter,ShipName,Pclass)
         elif Pclass == "destroyer":
             HP = random.randint(15,20)
             PHY = random.randint(10,20)
@@ -36,7 +34,6 @@ def main():
             ENG = random.randint(10,20)
             SHD = random.randint(10,15)
             encounter = 0
-            hero = gameObjects.Player(HP,PHY,ARM,SPD,ENG,SHD,encounter,ShipName,Pclass)
         elif Pclass == "cruiser":
             HP = random.randint(20,25)
             PHY = random.randint(15,20)
@@ -45,7 +42,6 @@ def main():
             ENG = random.randint(15,20)
             SHD = random.randint(5,10)
             encounter = 0
-            hero = gameObjects.Player(HP,PHY,ARM,SPD,ENG,SHD,encounter,ShipName,Pclass)
         elif Pclass == "battle ship":
             HP = random.randint(25,30)
             PHY = random.randint(17,20)
@@ -54,7 +50,7 @@ def main():
             ENG = random.randint(15,20)
             SHD = random.randint(1,5)
             encounter = 0
-            hero = gameObjects.Player(HP,PHY,ARM,SPD,ENG,SHD,encounter,ShipName,Pclass)
+    hero = gameObjects.Player(HP,PHY,ARM,SPD,ENG,SHD,encounter,ShipName,Pclass)
     hero.getStats()
     #hero.save()
     return hero
