@@ -8,8 +8,15 @@
 #################################
 
 class Entity(object):
-    def __init__(self):
-        pass
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD):
+        #T0-DO - Make Below Private, add getters/setters
+        self.HP = HP
+        self.PHY = PHY
+        self.ARM = ARM
+        self.SPD = SPD
+        self.ENG = ENG
+        self.SHD = SHD
+        #TO-DO - Add Ascii and Location support
     #attributes from Entity Class----
             #attack
             #energy attack
@@ -21,16 +28,33 @@ class Entity(object):
             #location
     #methods
         #takePDamage() - taking normal attack damage
+    def takePDamage(self,ePHY):
+        damage = ePHY - self.ARM / 2
+        if damage < 1:
+            damage = 1
+        self.HP = self.HP - damage
+        print("enemy health = ",self.HP)
         #takeEDamage() - taking energy attack damage
+    def takeEDamage(self,eENG):
+        damage = eENG - self.SHD / 2
+        if damage < 1:
+            damage = 1
+        self.HP = self.HP - damage
+        print("enemy health = ",self.HP)
         #showStats() - Summary of statistics relevant to the player
+    def getStats(self):
+        print("HP = ",self.HP)
+        print("PHY = ",self.PHY)
+        print("ARM = ",self.ARM)
+        print("SPD = ",self.SPD)
+        print("ENG = ",self.ENG)
+        print("SHD = ",self.SHD)
         #__str__() - Prints everything including background data - for debugging
-        #save - use Pickle module.
-    pass
+
 
 class Enemy(Entity):
-    def __init__(self):
-        super().__init__()
-        pass
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD):
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD)
         #attributes from Entity Class----
             #attack
             #energy attack
@@ -40,22 +64,26 @@ class Enemy(Entity):
             #speed
             #ascii art
             #location
-        #own attributes
+        #own attributes - TODO
             #dropChances
             #isBoss (y/n)
             #enemyClass (pick from a list)
+            #enemy object
         #methods from Entity
             #takeEDamage()
             #takePDamage()
             #save
         #overwritten Methods
             #__str__
-            #showStats()
+            #showStats() - No need to overwrite yet
             
         
 class Player(Entity):
-    def __init__(self):
-        super().__init(self)
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,encounter,name,shipClass):
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD)
+        self.__shipClass = shipClass
+        self.__name = name
+        self.__encounters = encounter
             #attributes----
                 #from Entity class
                     #attack (Corv - High, Destroyer - Medium, Cruiser - High, Battleship - High)
@@ -77,6 +105,13 @@ class Player(Entity):
                 #overwritten Methods
                     #__str__
                     #showStats()
+    def getStats(self):
+        super().getStats()
+        print("Number of encounters = ",self.__encounters)
+        print("Player Name: " + self.__name)
+        print("Ship Class: " + self.__shipClass)
+
+        
             
             
 #################################

@@ -1,5 +1,7 @@
 import random
 import gameObjects
+import CharCreator
+import EnemyCreator
 #################################
 ######## Creator Functions ######
 #################################
@@ -19,7 +21,7 @@ def generateCoordinates(coordList,numCoordinates,boardX,boardY):
                 validCoord = False
     return newCoords
 
-def createBoard(rows,columns):
+def createBoard(rows,columns,player):
     #create a board of size x size dimensions via nested lists.
     rowList = []
     for row in range(rows):
@@ -41,6 +43,14 @@ def createBoard(rows,columns):
         
     #create enemy or anomaly tiles for those points
     for coord in enemyCoordList:
+        EASY = 1
+        MEDIUM = 2
+        HARD = 3
+        SUPERHARD = 4
+        enemyClass = random.randint(1,4)
+        if enemyClass == EASY:
+            newEnemy = EnemyCreator.weakEnemy(1)
+        #finish adding other enemy types
         enemyTile = gameObjects.EnemyTile()
         rowList[coord[1]-1][coord[0]-1] = enemyTile
         print(rowList[coord[1]-1][coord[0]-1])
@@ -82,7 +92,7 @@ def createBoard(rows,columns):
     return gameBoard
         
 
-def createPlayer(): #charCreator.py
+def createPlayer(): #CharCreator.py
     #get the players name
     #get their ship class (corvette, destroyer, cruiser, battleship)
     #load value ranges for that class
@@ -92,7 +102,7 @@ def createPlayer(): #charCreator.py
     #return the object
     pass
 
-def createEnemy():
+def createEnemy(): #EnemyCreator.py
     #load the enemy definitions file
     #randomly select one and load its object (use pickle to save the objects to file)
     #return the enemy
@@ -131,8 +141,8 @@ def move(player,board):
 #################################
     
 def main():
-    player = createPlayer()
-    board = createBoard()
+    player = CharCreator.main()
+    board = createBoard(7,7,player)
     #player moves
         #check if the tile contains the final boss
             #if the tile does contain the boss check the players number of enemy defeats
@@ -153,4 +163,4 @@ def main():
             #else if there is an anomaly, apply its effects to the player
             #else display "nothing happened"
 
-createBoard(7,7)
+main()
