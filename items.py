@@ -1,3 +1,7 @@
+#to use an item, the user inputs what catagory they want to select from
+#the program prints the names of all the available buffs from the selected catagory
+#the buff is then applied
+
 ##
 ##Items for final project:
 ##
