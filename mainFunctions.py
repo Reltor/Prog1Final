@@ -2,6 +2,9 @@ import random
 import gameObjects
 import CharCreator
 import EnemyCreator
+import combat
+import items
+import pickle
 #################################
 ######## Creator Functions ######
 #################################
@@ -29,13 +32,13 @@ def createBoard(rows,columns,player):
         for column in range(columns):
             columnList.append("")
         rowList.append(columnList)
-    # masterCoordList tracks all used points, ensuring that anomalies, enemies and all other map tiles wont conflict or overwrite each other    
-    #randomly choose a number of points based on some calculation
-    numEnemies = random.randint(2,4)
+    numEnemies = random.randint(2,4) #number range currently hardcoded, want to change
     masterCoordList = []
+    
     enemyCoordList = generateCoordinates(masterCoordList[:],numEnemies,columns,rows)
     for coord in enemyCoordList:
         masterCoordList.append(coord)
+        
     numAnomalies = random.randint(2,4)
     anomalyCoordList = generateCoordinates(masterCoordList[:],numAnomalies,columns,rows)
     for coord in anomalyCoordList:
@@ -43,22 +46,12 @@ def createBoard(rows,columns,player):
         
     #create enemy or anomaly tiles for those points
     for coord in enemyCoordList:
-        EASY = 1
-        MEDIUM = 2
-        HARD = 3
-        SUPERHARD = 4
-        enemyClass = random.randint(1,4)
-        if enemyClass == EASY:
-            newEnemy = EnemyCreator.weakEnemy(1)
-        #finish adding other enemy types
-        enemyTile = gameObjects.EnemyTile()
+        enemyTile = createEnemyTile(coord)
         rowList[coord[1]-1][coord[0]-1] = enemyTile
-        print(rowList[coord[1]-1][coord[0]-1])
+        
     for coord in anomalyCoordList:
-        anomalyTile = gameObjects.AnomalyTile(location = coord)
+        anomalyTile = createAnomalyTile(coord)
         rowList[coord[1]-1][coord[0]-1] = anomalyTile
-        print(rowList[coord[1]-1][coord[0]-1])
-        print(anomalyTile.getLoc())
         
     #randomly place one "major/boss" enemy at another points
     bossCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
@@ -75,11 +68,14 @@ def createBoard(rows,columns,player):
         blackHoleCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
         rowList[coord[1]-1][coord[0]-1] = blackHoleTile
         print(rowList[coord[1]-1][coord[0]-1])
+    
     #place the player
-    playerTile = gameObjects.PlayerTile()
+    playerTile = gameObjects.PlayerTile(player) #create the tile with the player
     playerCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
     masterCoordList.append(playerCoord)
-    rowList[coord[1]-1][coord[0]-1] = playerTile
+    
+    rowList[coord[1]-1][coord[0]-1] = playerTile #place it on the board
+    
     #create empty tiles for all other points
     for row in rowList:
         for tile in row:
@@ -88,37 +84,34 @@ def createBoard(rows,columns,player):
                 row[tileIndex] = gameObjects.MapTile()
     gameBoard = gameObjects.Board(rowList)
     gameBoard.printBasicBoard()
-    #return the board
+    
     return gameBoard
-        
 
-def createPlayer(): #CharCreator.py
-    #get the players name
-    #get their ship class (corvette, destroyer, cruiser, battleship)
-    #load value ranges for that class
-    #randomly generate (within specific values) stats based on class
-    #load ascii art and speed for that class
-    #create a player object with all the above info
-    #return the object
-    pass
 
-def createEnemy(): #EnemyCreator.py
-    #load the enemy definitions file
-    #randomly select one and load its object (use pickle to save the objects to file)
-    #return the enemy
-    pass
+def createEnemyTile(coord):
+    EASY = 1
+    MEDIUM = 2
+    HARD = 3
+    SUPERHARD = 4
+    enemyClass = random.randint(1,4)
+    if enemyClass == EASY:
+        newEnemy = EnemyCreator.weakEnemy(1)[0]
+    elif enemyClass == MEDIUM:
+        newEnemy = EnemyCreator.medEnemy(1)[0]
+    elif enemyClass == HARD:
+        newEnemy = EnemyCreator.hardEnemy(1)[0]
+    elif enemyClass == SUPERHARD:
+        newEnemy = EnemyCreator.shEnemy(1)[0]
+    #finish adding other enemy types
+    enemyTile = gameObjects.EnemyTile(newEnemy, location = coord)
+    return enemyTile
 
-def createEnemyTile():
-    #create an enemy
-    #instantiate an EnemyTile object with that enemy
-    #return the EnemyTile
-    pass
-
-def createAnomalyTile():
+def createAnomalyTile(coord):
     #load anomaly definitions file
     #randomly select one and load its object (pickle)
+    anomalyTile = gameObjects.AnomalyTile(location = coord)
     #return the object
-    pass
+    return anomalyTile
 
 
 
@@ -128,21 +121,59 @@ def createAnomalyTile():
     
 def move(player,board):
     #ask the player for an x and y movement length
+    validMove = False
+    while not validMove:
+        try:
+            playerX = int(input("How far would you like to move left/right? (Negative numbers will be considered left)"))
+            playerY = int(input("How far would you like to move up/down? (Negative numbers will be considered down"))
+        except ValueError:
+            print("Moves must be integer values")
+        totalMoveLen = abs(playerX) + abs(playerY)
+        if totalMoveLen > player.getMoveRange():
+            print("That is too many spaces, please pick lower move values")
+        elif totalMoveLen <= player.getMoveRange():
+            newCoordX = player.getCoord[0] + playerX
+            newCoordY = player.getCoord[1] + playerY
+            if newCoordX => 1 and newCoordX <= board.getX() and newCoordY => 1 and newCoordY <= board.getY():
+                newCoord = (newCoordX,newCoordY)
+                validMove = True
+            else:
+                print("That move would take you off the board and is invalid")
+    player.setLoc(newCoord)
+    oldTile = board.getRawBoard()[player.getCoord[1]-1][player.getCoord[0]-1]
+    newTile = board.getRawBoard()[newCoordY-1][newCoordX-1]
+    oldTile.removePlayer()
+    newTile.addPlayer()
+    
     #if the movement lengths are less than or equal to the players max move
         #find the player
         #move the object by the specified x and y coordinates
         #set the tile the player used to be in to playeroccupied = no
         #set the new tile to player occupied = yes
     #return the board
-    pass
+    return player, board
 
 #################################
 ############# Main ##############
 #################################
     
 def main():
-    player = CharCreator.main()
-    board = createBoard(7,7,player)
+    validResponse = False
+    while not validResponse:
+        loadSave = str(input("Would you like to load an existing save? [Y/N]? "))
+        if loadSave == "Y" or loadSave == "N":
+            validResponse = True
+        else:
+            print("That is not yes or no")
+    if loadSave == "N":
+        print("Beginning Game")
+        player = CharCreator.main()
+        board = createBoard(7,7,player)
+    elif loadSave == "Y":
+        board = loadGame()
+        board.showBoard()
+        player.gameSummary()
+
     #player moves
         #check if the tile contains the final boss
             #if the tile does contain the boss check the players number of enemy defeats

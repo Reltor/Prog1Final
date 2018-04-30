@@ -102,8 +102,8 @@
                     #inventory (Bottomless v1) - a list of the items the player has picked up
                     #ship class (Corvette, Destroyer, Cruiser, Battleship)
                     #movement range (1-4) - how many tiles can be moved per move max
-                    #num enemies defeated (used to see if you can fight the final boss yet) - iterated every time an enemy is defeated. this is checked to
-                                                                                             # see if you have progressed far enough to face the boss
+                    #num enemies defeated (used to see if you can fight the final boss yet)
+                    #num anomalies explored                                                                     
                     #damage dealt
                     #damage taken
                 #overwritten/new Methods
@@ -215,6 +215,10 @@
         #assigned as self.__board
     #getBoard(self):
         #return self.__board variable
+    #getX
+        #returns x length of board
+    #getY
+        #returns y length of board
     #printBasicBoard(self):
         #prints a basic graphic representation of the board
         #using seperators and other basic text representations
@@ -270,6 +274,8 @@
         #art
         #name
         #??????
+
+
 ########################
 ### mainFunctions.py ###
 ########################
@@ -286,6 +292,7 @@
     #creates a list of Y rows
     #in each row creates a list of X columns
     #generates a random number of enemies, and their coordinates
+    #decides what parts of those enemies are going to be what level based on player level.
         #for each enemy
             #use more random numbers to decide what level each enemy is
             #use the enemy creator to make the enemy based on that level
@@ -340,7 +347,7 @@
     #return board
 
 
-    
+#### MAIN FUNCTION FOR THE WHOLE GAME ####    
 #main - handles the overarching game
     #load save (y/n)?
     #if no
@@ -455,6 +462,16 @@
     #once all enemies are dead, the player is dead, or player runs.
         #return player, remaining enemies, reason combat ended
                 
+
+########################
+##### encounter.py #####
+########################
+#anomalyEncounter
+    #takes the player and anomaly as arguments
+    #generates the flavor text for the anomaly
+    #applies a buff or debuff effect to the player
+    #iterates the player's anomaly counter
+    #returns the player
 
 ########################
 ###### itemGen.py ######
