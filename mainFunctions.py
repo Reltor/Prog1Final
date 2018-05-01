@@ -1,10 +1,7 @@
-import random
-import gameObjects
-import CharCreator
-import EnemyCreator
-import combat
-import items
-import pickle
+
+from os import system
+from msvcrt import getch
+import random,gameObjects, CharCreator, EnemyCreator, combat, items, pickle
 #################################
 ######## Creator Functions ######
 #################################
@@ -24,7 +21,7 @@ def generateCoordinates(coordList,numCoordinates,boardX,boardY):
                 validCoord = False
     return newCoords
 
-def createBoard(rows,columns,player):
+def createBoard(rows,columns,player): #rework player placement
     #create a board of size x size dimensions via nested lists.
     rowList = []
     for row in range(rows):
@@ -72,6 +69,7 @@ def createBoard(rows,columns,player):
     #place the player
     playerTile = gameObjects.PlayerTile(player) #create the tile with the player
     playerCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
+    player.setLoc(playerCoord)
     masterCoordList.append(playerCoord)
     
     rowList[coord[1]-1][coord[0]-1] = playerTile #place it on the board
@@ -119,79 +117,165 @@ def createAnomalyTile(coord):
 ##### Gameplay Functions ########
 #################################
     
-def move(player,board):
-    #ask the player for an x and y movement length
-    validMove = False
-    while not validMove:
-        try:
-            playerX = int(input("How far would you like to move left/right? (Negative numbers will be considered left)"))
-            playerY = int(input("How far would you like to move up/down? (Negative numbers will be considered down"))
-        except ValueError:
-            print("Moves must be integer values")
-        totalMoveLen = abs(playerX) + abs(playerY)
-        if totalMoveLen > player.getMoveRange():
-            print("That is too many spaces, please pick lower move values")
-        elif totalMoveLen <= player.getMoveRange():
-            newCoordX = player.getCoord[0] + playerX
-            newCoordY = player.getCoord[1] + playerY
-            if newCoordX => 1 and newCoordX <= board.getX() and newCoordY => 1 and newCoordY <= board.getY():
-                newCoord = (newCoordX,newCoordY)
-                validMove = True
-            else:
-                print("That move would take you off the board and is invalid")
-    player.setLoc(newCoord)
-    oldTile = board.getRawBoard()[player.getCoord[1]-1][player.getCoord[0]-1]
-    newTile = board.getRawBoard()[newCoordY-1][newCoordX-1]
-    oldTile.removePlayer()
-    newTile.addPlayer()
-    
-    #if the movement lengths are less than or equal to the players max move
-        #find the player
-        #move the object by the specified x and y coordinates
-        #set the tile the player used to be in to playeroccupied = no
-        #set the new tile to player occupied = yes
-    #return the board
-    return player, board
+def move(board,player,num):
+    UP = 72
+    DOWN = 80
+    LEFT = 75 
+    RIGHT = 77
+    if num == UP:
+        oldCoord = player.getLoc()
+        newY = player.getLoc()[1] - 1
+        if newY >= 0 and newY <= board.getY():
+            newCoord = (player.getLoc()[0],newY)
+            player.setLoc(newCoord)
+            board.removePlayer(oldCoord)
+            board.addPlayer(player.getLoc())
+    return board,player
 
 #################################
 ############# Main ##############
 #################################
     
 def main():
-    validResponse = False
-    while not validResponse:
-        loadSave = str(input("Would you like to load an existing save? [Y/N]? "))
-        if loadSave == "Y" or loadSave == "N":
-            validResponse = True
-        else:
-            print("That is not yes or no")
-    if loadSave == "N":
-        print("Beginning Game")
-        player = CharCreator.main()
-        board = createBoard(7,7,player)
-    elif loadSave == "Y":
-        board = loadGame()
-        board.showBoard()
-        player.gameSummary()
+    try:
+        validResponse = False
+        while not validResponse:
+            loadSave = str(input("Would you like to load an existing save? [Y/N]? "))
+            if loadSave == "Y" or loadSave == "N":
+                validResponse = True
+            else:
+                print("That is not yes or no")
+        if loadSave == "N":
+            print("Beginning Game")
+            player = CharCreator.main()
+            board = createBoard(7,7,player)
+        elif loadSave == "Y":
+            board = loadGame()
+            board.showBoard()
+            player.gameSummary()
 
-    #player moves
-        #check if the tile contains the final boss
-            #if the tile does contain the boss check the players number of enemy defeats
-                #if the player has defeated enough enemies ask the player if they want to fight the boss
-                    #if yes initiate a battle with the final boss
-                        #if you lose game over
-                        #elif you win game won
-                            #{lots of celebration and statistics that inflate your ego
-            #else if any of the conditions above are not met, move the player away 1 tile
-                #check where the player is
-                #if x coord <board size move the player one tile right
-                #elif y coord< board size move the player one tile down
-                #else move the player one tile left
-        #if the tile doesnt contain the boss, check for an enemy or anomaly
-            #if there is an enemy, fight it
-                #if the player wins, display {encouragment} {celebration} and replace the tile with an empty tile
-                #elif the player loses, end the game {possibly lose a life}?
-            #else if there is an anomaly, apply its effects to the player
-            #else display "nothing happened"
+       
+    #main - handles the overarching game
+        #load save (y/n)?
+        #if no
+            #create the player
+            #create the board
+        #if yes, load given save file.
+            #check to make sure the file is a pickle file containing a legit save.
+            #display the board
+            #display character stats and other relevant info
 
+        playerWon = False
+        playerDead = False
+        
+        SPECIALCHAR = 100
+        UP = 72
+        DOWN = 80
+        LEFT = 75 
+        RIGHT = 77
+        Q = 113
+        S = 115
+        I = 105
+        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I]
+        while not playerWon and not playerDead:
+        #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
+            print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
+            #playerChoice = ord(getch())
+            playerChoice = UP
+            if playerChoice in ordList:
+                if playerChoice in [SPECIALCHAR,UP,DOWN,LEFT,RIGHT]:
+                    board, player = move(board,player,playerChoice)
+                    newCoord = player.getLoc()
+                    currentTile = board.getRawBoard()[newCoord[1]][newCoord[0]]
+                    if isinstance(currentTile,gameObjects.EnemyTile):
+                        player,combatResolution = combat(currentTile.getEnemy(),player)
+                        if combatResolution == "W":
+                            currentTile.removeEnemy()
+                        elif combatResolution == "L":
+                            playerLoses(player)
+                            break
+                        elif combatResolution == "R":
+                            board,player = moveAway(board,player)
+                    elif isinstance(currentTile,gameObjects.BossTile):
+                        encountersNeeded = 5
+                        if player.getEncounters() >= 5:
+                            player,combatResolution = combat(currentTile.getBoss(),player)
+                            if combatResolution == "W":
+                                playerWins(board,player)
+                                break
+                            elif combatResolution == "L":
+                                playerLoses(player)
+                                break
+                    elif isinstance(currentTile,gameObjects.AnomalyTile):
+                        player = encounter(anomaly,player)
+                elif playerChoice == Q:
+                    print("Press Q to quit immediately or S to save first")
+                    playerChoice = ord(getch())
+                    if playerChoice == Q:
+                        #command to close window
+                        pass
+                    elif playerChoice == S:
+                        save(board,player)
+                elif playerChoice == S:
+     
+                    save(board,player)
+                    #clear screen
+                    print("Game Saved")
+                    print("Press Any Key to Exit")
+                    key = ord(getch("..."))
+                    #command to close window
+                elif playerChoice == I:
+                    player.useItem()
+                else:
+                    print("Invalid")
+            #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory]
+                #player moves
+                    #MOVE()
+                    #player moves to an occupied tile
+                        #encounter = True
+                        #check if the tile contains the final boss
+                            #if the tile does contain the boss check the players number of enemy defeats
+                                #if the player has defeated enough enemies ask the player if they want to fight the boss
+                                    #if yes initiate a battle with the final boss - combat.py
+                                        #if you lose game over   -playerLoses()
+                                        #elif you win game won   -playerWins()
+                            #else if player doesnt have enough encounters or dont want to fight, move the player away
+                                #move the player one tile based on RNG and position (Up,down,left,right)
+                                #loop random moves until a valid move is found. 
+                                #while not valid move
+                                    #moveAway()
+                                    
+                        #if the tile doesnt contain the boss, check for an enemy or anomaly
+                            #if there is an enemy, fight it
+                                #if the player wins, display {encouragment} {celebration} and replace their current tile with a PlayerTile
+                                #elif the player loses, end the game {possibly lose a life}?
+                                #elif the player runs, move them 1 tile randomly
+                                    #update the enemyTile with the enemies state after battle
+                                    
+                            #else if there is an anomaly, player encounters the anomaly
+                                #set anomaly tile to player occupied
+                    #player moves to unoccupied tile
+                #redraw board
+                
+            
+                #use item
+                    #asks the player to choose an item from their inventory or cancel
+                    #if the player wants to use an item that is single use, warn them it will be wasted
+                        #if they still want to use it, use the item
+                        #else loop back to top
+            
+                #save
+                    #use a save function to save the board.
+                    #the board contains all objects and tiles and everything in play, so we should just need to save that one object.
+
+            
+                #quit
+                    #warns the player to save first [Q] to quit, [S] to save
+                        #if they choose to save, run the save function
+                        #else terminate the program.
+    except Exception as error:
+        errorFile = open("error.txt","a")
+        errorFile.write(str(error))
+        errorFile.close()
 main()
+raw_input()

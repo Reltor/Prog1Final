@@ -140,13 +140,7 @@
                             #move the player one tile based on RNG and position (Up,down,left,right)
                             #loop random moves until a valid move is found. 
                             #while not valid move
-                                #move direction is a random choice from a list of key ORDs
-                                #get characters current position
-                                #move(choice)
-                                #check if the character moved by comparing old and new positions
-                                #get characters new position
-                                #if its not equal AND the new tile is not occupied
-                                    #validMove = True
+                                #moveAway()
                                 
                     #if the tile doesnt contain the boss, check for an enemy or anomaly
                         #if there is an enemy, fight it
@@ -426,7 +420,10 @@
         #useful if an enemy dies, or an anomaly is cleared
         #or literally any time the player changes position
         #self.__board[yCoord][xCoord] = newTile
-
+    #addPlayer(coord)
+        #sets the tile at coord to playerOccupied
+    #removePlayer(coord)
+        #sets the tile at coord to not playerOccupied
     #################################
     ######## Misc Objects ###########
     #################################            
