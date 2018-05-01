@@ -101,7 +101,6 @@
                 #other
                     #inventory (Bottomless v1) - a list of the items the player has picked up
                     #ship class (Corvette, Destroyer, Cruiser, Battleship)
-                    #movement range (1-4) - how many tiles can be moved per move max
                     #num enemies defeated (used to see if you can fight the final boss yet)
                     #num anomalies explored                                                                     
                     #damage dealt
@@ -129,7 +128,6 @@
         #is the boss here (y/n)
         #location (x,y coordinate)
         #ascii art
-        #player (a player object or null value)
 
         ##### methods #####
         #getter methods
@@ -150,7 +148,6 @@
                 #is the boss here (n)
                 #location
                 #ascii art
-                #player
         #### seperate attributes ####
         #damage (how much damage it would do the the player landing on it)
         #debuff/buff (any buff or de-buff it would apply
@@ -163,7 +160,6 @@
             #is the boss here (n)
             #location
             #ascii art
-            #player
         #seperate attributes
             #killPlayer()
             #get players energy mod and current health
@@ -179,7 +175,6 @@
                 #is the boss here(n)
                 #location
                 #ascii art
-                #player
             #seperate
                 #enemy object
         
@@ -192,7 +187,6 @@
                 #is the boss here(y)
                 #location
                 #ascii art
-                #player
             #seperate
                 #boss dialogue
                     #ready to encounter dialogue
@@ -358,73 +352,72 @@
         #display the board
         #display character stats and other relevant info
     #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
-    #check if the player is on an enemy/anomaly/boss tile. if they are occupied start encounter.
-        #else ask the player, move, use item, save or quit. 
-        #player moves or player was already on an occupied tile
-            #check if the tile contains the final boss
-                #if the tile does contain the boss check the players number of enemy defeats
-                    #if the player has defeated enough enemies ask the player if they want to fight the boss
-                        #if yes initiate a battle with the final boss - combat.py
-                            #if you lose game over
-                                #save the ending board
-                                #sad pictures and death screens
-                                #player is sad
-                            #elif you win game won
-                                #replace boss tile with playerTile
-                                #{lots of celebration and statistics that inflate your ego}
-                #else if player dont have enough encounters or dont want to fight, move the player away 1 tile - move()
-                    #check where the player is
-                    #if x coord <board size move the player one tile right
-                    #elif y coord< board size move the player one tile down
-                    #else move the player one tile left
-            #if the tile doesnt contain the boss, check for an enemy or anomaly
-                #if there is an enemy, fight it
-                    #if the player wins, display {encouragment} {celebration} and replace their current tile with a PlayerTile
-                    #elif the player loses, end the game {possibly lose a life}?
-                    #elif the player runs, move them 1 tile randomly
-                        #update the enemyTile with the enemies state after battle
-                        
-                #else if there is an anomaly, apply its effects to the player
-                    #set anomaly tile to player occupied
-                #else display "nothing happened"
-            #change the state of all tiles the player moved across to "explored"
-            #display the board at the end of the turn
+        #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory]
+            #player moves
+                #MOVE()
+                #player moves to an occupied tile
+                    #encounter = True
+                    #check if the tile contains the final boss
+                        #if the tile does contain the boss check the players number of enemy defeats
+                            #if the player has defeated enough enemies ask the player if they want to fight the boss
+                                #if yes initiate a battle with the final boss - combat.py
+                                    #if you lose game over   -playerLoses()
+                                    #elif you win game won   -playerWins()
+                        #else if player dont have enough encounters or dont want to fight, move the player away
+                            #move the player one tile based on RNG and position (Up,down,left,right)
+                    #if the tile doesnt contain the boss, check for an enemy or anomaly
+                        #if there is an enemy, fight it
+                            #if the player wins, display {encouragment} {celebration} and replace their current tile with a PlayerTile
+                            #elif the player loses, end the game {possibly lose a life}?
+                            #elif the player runs, move them 1 tile randomly
+                                #update the enemyTile with the enemies state after battle
+                                
+                        #else if there is an anomaly, player encounters the anomaly
+                            #set anomaly tile to player occupied
+                #player moves to unoccupied tile
+                    #move()
+                    #redraw board
+            
+        
+            #use item
+                #asks the player to choose an item from their inventory or cancel
+                #if the player wants to use an item that is single use, warn them it will be wasted
+                    #if they still want to use it, use the item
+                    #else loop back to top
+        
+            #save
+                #use a save function to save the board.
+                #the board contains all objects and tiles and everything in play, so we should just need to save that one object.
 
-    
-        #use item
-            #asks the player to choose an item from their inventory or cancel
-            #if the player wants to use an item that is single use, warn them it will be wasted
-                #if they still want to use it, use the item
-                #else loop back to top
+        
+            #quit
+                #warns the player to save first [Q] to quit, [S] to save
+                    #if they choose to save, run the save function
+                    #else terminate the program.
 
-    
-        #save
-            #use a save function to save the board.
-            #the board contains all objects and tiles and everything in play, so we should just need to save that one object.
+#playerWins
+    #replace boss tile with playerTile
+    #redraw board
+    #{lots of celebration and statistics that inflate your ego}
+    #celebration
+    #list off enemies killed
+    #damage done
+    #damage taken
+    #anomalies explored
+    #???
+    #THE END
 
-    
-        #quit
-            #warns the player to save first
-            #if they choose to save, run the save function
-            #else terminate the program.
-
-    #playerWins
-        #celebration
-        #list off enemies killed
-        #damage done
-        #damage taken
-        #anomalies explored
-        #???
-        #THE END
-    
-    #playerLoses
-        #tragic death message
-        #list off enemies killed
-        #damage done
-        #damage taken
-        #anomalies explored
-        #celebrate the glorious life of what killed the player
-        #THE END
+#playerLoses
+    #save the ending board
+    #sad pictures and death screens
+    #player is sad
+    #tragic death message
+    #list off enemies killed
+    #damage done
+    #damage taken
+    #anomalies explored
+    #celebrate the glorious life of what killed the player
+    #THE END
 
 ########################
 ###### combat.py #######
@@ -456,6 +449,8 @@
                     #check its energy and physical damage
                     #use chooseAttack() method to select an enemy attack to use
                     #use that attack
+            #drop an item for the player
+                #item pickup 
     #if the player won, end reason  = "WIN"
     #elif the player died, end reason = "DEAD"
     #elif the player ran, end reason = "RUN"
