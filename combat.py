@@ -1,3 +1,7 @@
+import time
+import random
+import gameObjects
+
 def combat(enemy,player):
     print("An enemy",enemy.name,"appears!")
     print("---------------------")
