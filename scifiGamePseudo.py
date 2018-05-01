@@ -5,6 +5,202 @@
     #anomalyDef - .anomaly
     #artDef - .art
 
+
+########################
+### mainFunctions.py ###
+########################
+    
+#generateCoordinates
+    #takes a number of coordinates, the currently existing coordinates and the x,y size of the board
+    #create an empty list of new coordinates
+    #generate a list X coordinates, checking to make sure they don't conflict with the ones that already exist
+    #return the new list
+
+#createBoard
+    #takes the player as an argument, as well as x,y size of the board
+    #takes an x,y size of the board
+    #creates a list of Y rows
+    #in each row creates a list of X columns
+    #generates a random number of enemies, and their coordinates
+    #decides what parts of those enemies are going to be what level based on player level.
+        #for each enemy
+            #use more random numbers to decide what level each enemy is
+            #use the enemy creator to make the enemy based on that level
+            #create an enemy tile with the enemy on it
+        #places the enemy tiles into the list representing the board, at their coordinates
+    #generate a random number of anomalies and coordinates
+        #for each anomaly
+            #randomly choose one from a file of definitions
+            #create an anomalytile with that anomaly in it
+        #place all the anomaly tiles at their coordinates
+    #generates one "boss" enemy, placing it at a new coordinate with a bosstile
+    #random chance to spawn a blackhole with its coordinates and tile
+    #all other spots are filled with generic map tiles
+    #pick a random one of these map tiles
+        #generate player coordinates and set the appropriate tile to playerOccupied
+    #return the board
+        
+#createEnemyTile
+    #creates an enemy using EnemyCreator.py
+    #creates an EnemyTile
+    #places the enemy in the tile and returns it
+
+#createAnomalyTile
+    #picks an anomaly from the list of defined anomalies
+    #creates an AnomalyTile
+    #places the anomaly on the tile and returns it
+
+#move
+    #takes a player object, board and ord of key press
+    #if ORD is UP
+        #check to make sure board exists at that coord
+            #if not leave everything alone
+            #print "due to subspace anomaly you are unable to explore this region of space"
+        #subtract 1 from Y coord
+    #elif ord is DOWN
+        #check to make sure board exists at that coord
+            #if not leave everything alone
+            #print "due to subspace anomaly you are unable to explore this region of space"
+        #add 1 to Y coord
+    #elif ord is LEFT
+        #check to make sure board exists at that coord
+            #if not leave everything alone
+            #print "due to subspace anomaly you are unable to explore this region of space"
+        #subtract 1 from X coord
+    #elif ord is RIGHT
+        #check to make sure board exists at that coord
+            #if not leave everything alone
+            #print "due to subspace anomaly you are unable to explore this region of space"
+        #add 1 to X coord
+
+
+    #set old tile to playerOccupied = False
+    #if tile is empty and and enemyTile, change to wreckage tile - if time
+    #elif tile is anomaly tile, do nothing else
+    #elif tile is empty, do nothing else
+    #change player coord
+    #redraw board
+    #return board, player
+    
+ 
+#moveAway
+    #used to run from boss or fight
+    #takes player object and board
+    #finds the player
+    #randomly generates a direction to move
+    #tries to move the player that direction
+    #redraws
+    #if that tile is occupied, continues to move the player until it finds an empty tile.
+    #change player coord
+    #redraw board
+    #return board, player
+    
+#save
+    #takes a player and a board as args
+    #asks the user for a file name
+    #appends {super secret extension} to the name
+    #uses pickle to save the board to that file
+    #uses pickle to save the player to that file
+    #ends the program
+
+#load
+    #ask the user for a file name
+        #check to make sure the file exists, and has the right extension
+        #if it does, load the file
+        #load the board from the file using pickle
+        #load the player from the file using pickle
+    #else ask the user to confirm the filename
+
+    #return board, player
+
+
+#### MAIN FUNCTION FOR THE WHOLE GAME ####    
+#main - handles the overarching game
+    #load save (y/n)?
+    #if no
+        #create the player
+        #create the board
+    #if yes, load given save file.
+        #check to make sure the file is a pickle file containing a legit save.
+        #display the board
+        #display character stats and other relevant info
+    #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
+        #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory]
+            #player moves
+                #MOVE()
+                #player moves to an occupied tile
+                    #encounter = True
+                    #check if the tile contains the final boss
+                        #if the tile does contain the boss check the players number of enemy defeats
+                            #if the player has defeated enough enemies ask the player if they want to fight the boss
+                                #if yes initiate a battle with the final boss - combat.py
+                                    #if you lose game over   -playerLoses()
+                                    #elif you win game won   -playerWins()
+                        #else if player doesnt have enough encounters or dont want to fight, move the player away
+                            #move the player one tile based on RNG and position (Up,down,left,right)
+                            #loop random moves until a valid move is found. 
+                            #while not valid move
+                                #move direction is a random choice from a list of key ORDs
+                                #get characters current position
+                                #move(choice)
+                                #check if the character moved by comparing old and new positions
+                                #get characters new position
+                                #if its not equal AND the new tile is not occupied
+                                    #validMove = True
+                                
+                    #if the tile doesnt contain the boss, check for an enemy or anomaly
+                        #if there is an enemy, fight it
+                            #if the player wins, display {encouragment} {celebration} and replace their current tile with a PlayerTile
+                            #elif the player loses, end the game {possibly lose a life}?
+                            #elif the player runs, move them 1 tile randomly
+                                #update the enemyTile with the enemies state after battle
+                                
+                        #else if there is an anomaly, player encounters the anomaly
+                            #set anomaly tile to player occupied
+                #player moves to unoccupied tile
+            #redraw board
+            
+        
+            #use item
+                #asks the player to choose an item from their inventory or cancel
+                #if the player wants to use an item that is single use, warn them it will be wasted
+                    #if they still want to use it, use the item
+                    #else loop back to top
+        
+            #save
+                #use a save function to save the board.
+                #the board contains all objects and tiles and everything in play, so we should just need to save that one object.
+
+        
+            #quit
+                #warns the player to save first [Q] to quit, [S] to save
+                    #if they choose to save, run the save function
+                    #else terminate the program.
+
+#playerWins
+    #replace boss tile with playerTile
+    #redraw board
+    #{lots of celebration and statistics that inflate your ego}
+    #celebration
+    #list off enemies killed
+    #damage done
+    #damage taken
+    #anomalies explored
+    #???
+    #THE END
+
+#playerLoses
+    #save the ending board
+    #sad pictures and death screens
+    #player is sad
+    #tragic death message
+    #list off enemies killed
+    #damage done
+    #damage taken
+    #anomalies explored
+    #celebrate the glorious life of what killed the player
+    #THE END
+
 ########################
 #### CharCreator.py ####
 ########################
@@ -57,11 +253,14 @@
             #name
             #speed
             #ascii art
-            #location (x,y) 
+            #location (x,y)
+            #hp
     #methods
         #takePDamage() - taking normal attack damage - take physical damage, takes a damage amount as argument, modifies the value as appropriate and then effects the entity with it.
         #takeEDamage() - taking energy attack damage - take energy damage, takes a damage amount as argument, modifies the value as appropriate and then effects the entity with it.
         #showStats() - Summary of statistics relevant to the player
+        #takeDMG
+        #changeXStat (setters for all the statz)
         #__str__() - Prints everything including background data - for debugging
 
 
@@ -75,6 +274,7 @@
             #speed
             #ascii art
             #location
+            #hp
         #own attributes - TODO
             #dropChances - enemies can drop items
             #isBoss (y/n) - flags whether this enemy is considered a final boss
@@ -82,6 +282,7 @@
         #methods from Entity
             #takeEDamage()  
             #takePDamage()
+            #changeXStat()
         #overwritten Methods
             #__str__
             #showStats()
@@ -98,6 +299,7 @@
                     #name (Player Input)
                     #speed (Corv - Super High, Destroyer - High, Cruiser - Mid, Battleship Low)
                     #location
+                    #hp
                 #other
                     #inventory (Bottomless v1) - a list of the items the player has picked up
                     #ship class (Corvette, Destroyer, Cruiser, Battleship)
@@ -107,7 +309,15 @@
                     #damage taken
                 #overwritten/new Methods
                     #pickupItem() - to take an item dropped
-                    #useItem() - to use an item from inventory
+                    #usePowerup() - to use an item from inventory
+                        #take an item from inventory
+                        #find its effect
+                        #apply the effect to the player
+                    #useCombatItem()
+                        #heals
+                        #torpedos
+                        #etc
+                        #apply effects to enemy
                     #__str__
                     #showStats()
                     #takeEDamage()
@@ -138,6 +348,10 @@
             #takes the player object
             #replaces it with null
             #returns the player objects
+        #__str__(self):
+            #if the tile doesn't have a player, display tile art/char representation
+            #elif the tile is playerOccupied, display "P"
+            #return display value
 
         
 # a type of MapTile that contains an Anomaly, with its special effects and art
@@ -151,6 +365,7 @@
         #### seperate attributes ####
         #damage (how much damage it would do the the player landing on it)
         #debuff/buff (any buff or de-buff it would apply
+        
         
 # a special subtype of anomaly that kills the player when they land on it, very low chance to spawn        
 #BlackHoleTile
@@ -193,16 +408,6 @@
                     #not ready (go away) dialogue
         
 
-#a playertile is the tile where the player is, when a player is idle on a spot, whatever tile was there is replaced with this. When the player leaves this tile would be replaced with a generic maptile.
-#PlayerTile
-        #attributes from MapTile
-            #empty/occupied (occupied)
-            #player occupied (y)
-            #is the boss here(n)
-            #location
-            #ascii art
-        
-
 #a Board is a list of lists of MapTile objects. It has methods to display itself, as well as replace tiles when their state changes. (player moves, enemy dies, etc)        
 #Board
         #takes a list of rows of map objects
@@ -220,8 +425,7 @@
         #replaces a tile at the given coordinates with a new tile
         #useful if an enemy dies, or an anomaly is cleared
         #or literally any time the player changes position
-        #self.__board[yCoord-1][xCoord-1] = newTile
-
+        #self.__board[yCoord][xCoord] = newTile
 
     #################################
     ######## Misc Objects ###########
@@ -270,154 +474,6 @@
         #??????
 
 
-########################
-### mainFunctions.py ###
-########################
-    
-#generateCoordinates
-    #takes a number of coordinates, the currently existing coordinates and the x,y size of the board
-    #create an empty list of new coordinates
-    #generate a list X coordinates, checking to make sure they don't conflict with the ones that already exist
-    #return the new list
-
-#createBoard
-    #takes the player as an argument, as well as x,y size of the board
-    #takes an x,y size of the board
-    #creates a list of Y rows
-    #in each row creates a list of X columns
-    #generates a random number of enemies, and their coordinates
-    #decides what parts of those enemies are going to be what level based on player level.
-        #for each enemy
-            #use more random numbers to decide what level each enemy is
-            #use the enemy creator to make the enemy based on that level
-            #create an enemy tile with the enemy on it
-        #places the enemy tiles into the list representing the board, at their coordinates
-    #generate a random number of anomalies and coordinates
-        #for each anomaly
-            #randomly choose one from a file of definitions
-            #create an anomalytile with that anomaly in it
-        #place all the anomaly tiles at their coordinates
-    #generates one "boss" enemy, placing it at a new coordinate with a bosstile
-    #random chance to spawn a blackhole with its coordinates and tile
-    #places the player in an empty tile with a PlayerTile
-    #all other spots are filled with generic map tiles
-    #return the board
-        
-#createEnemyTile
-    #creates an enemy using EnemyCreator.py
-    #creates an EnemyTile
-    #places the enemy in the tile and returns it
-
-#createAnomalyTile
-    #picks an anomaly from the list of defined anomalies
-    #creates an AnomalyTile
-    #places the anomaly on the tile and returns it
-
-#move
-    #takes a player object and the board
-    #ask the player for an x and y movement length
-    #if the movement lengths are less than or equal to the players max move
-        #find the player based on the objects loc attribute
-        #move the object by the specified x and y coordinates
-        #set the tile the player used to be in to be a generic MapTile if the tile was a PlayerTile
-            #simply set playerOccupied = False if the tile is still occupied by something else
-        #set the new tile to playerOccupied = Yes
-        #set all tiles the player moved over to "scanned"
-        #update players loc variable so it knows where it is
-    #return the board
-    
-#save
-    #asks the user for a file name
-    #appends {super secret extension} to the name
-    #uses pickle to save the board to that file
-    #ends the program
-
-#load
-    #ask the user for a file name
-    #check to make sure the file exists, and has the right extension
-    #if it does, load the file
-    #else ask the user to confirm the filename
-    #load the board from the file using pickle
-    #return board
-
-
-#### MAIN FUNCTION FOR THE WHOLE GAME ####    
-#main - handles the overarching game
-    #load save (y/n)?
-    #if no
-        #create the player
-        #create the board
-    #if yes, load given save file.
-        #check to make sure the file is a pickle file containing a legit save.
-        #display the board
-        #display character stats and other relevant info
-    #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
-        #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory]
-            #player moves
-                #MOVE()
-                #player moves to an occupied tile
-                    #encounter = True
-                    #check if the tile contains the final boss
-                        #if the tile does contain the boss check the players number of enemy defeats
-                            #if the player has defeated enough enemies ask the player if they want to fight the boss
-                                #if yes initiate a battle with the final boss - combat.py
-                                    #if you lose game over   -playerLoses()
-                                    #elif you win game won   -playerWins()
-                        #else if player dont have enough encounters or dont want to fight, move the player away
-                            #move the player one tile based on RNG and position (Up,down,left,right)
-                    #if the tile doesnt contain the boss, check for an enemy or anomaly
-                        #if there is an enemy, fight it
-                            #if the player wins, display {encouragment} {celebration} and replace their current tile with a PlayerTile
-                            #elif the player loses, end the game {possibly lose a life}?
-                            #elif the player runs, move them 1 tile randomly
-                                #update the enemyTile with the enemies state after battle
-                                
-                        #else if there is an anomaly, player encounters the anomaly
-                            #set anomaly tile to player occupied
-                #player moves to unoccupied tile
-                    #move()
-                    #redraw board
-            
-        
-            #use item
-                #asks the player to choose an item from their inventory or cancel
-                #if the player wants to use an item that is single use, warn them it will be wasted
-                    #if they still want to use it, use the item
-                    #else loop back to top
-        
-            #save
-                #use a save function to save the board.
-                #the board contains all objects and tiles and everything in play, so we should just need to save that one object.
-
-        
-            #quit
-                #warns the player to save first [Q] to quit, [S] to save
-                    #if they choose to save, run the save function
-                    #else terminate the program.
-
-#playerWins
-    #replace boss tile with playerTile
-    #redraw board
-    #{lots of celebration and statistics that inflate your ego}
-    #celebration
-    #list off enemies killed
-    #damage done
-    #damage taken
-    #anomalies explored
-    #???
-    #THE END
-
-#playerLoses
-    #save the ending board
-    #sad pictures and death screens
-    #player is sad
-    #tragic death message
-    #list off enemies killed
-    #damage done
-    #damage taken
-    #anomalies explored
-    #celebrate the glorious life of what killed the player
-    #THE END
 
 ########################
 ###### combat.py #######
@@ -438,13 +494,11 @@
                     #elif flee, use speed to calculate a random chance to get away
                         #if the player flees successfully, end whole function, return "Fled" and Player and any remaining enemies
                         #elif the player doesn't flee successfuly, they forfeit their turn
-                    #elif use item, have the player choose an item to use.
-                        #list of usable items
-                        #use "while selection not in" to make sure input is an item
-                        #activate item buff
-                        #remove item from inventory
-                    #decrement timers for all items in players inventory that aren't permanent, except the just used one.
-                    #if any items have reached 0, call their removeEffects() method and remove them from the player
+                    #elif use item and player has items to use, have the player choose an item to use.
+                        #list of useable combat items
+                        #choice with plaintext
+                        #use item
+                        #if item does damage, add to players overall damage
                 #if enemies turn
                     #check its energy and physical damage
                     #use chooseAttack() method to select an enemy attack to use
@@ -463,6 +517,7 @@
 ########################
 #anomalyEncounter
     #takes the player and anomaly as arguments
+    #redraw with below vvvvv
     #generates the flavor text for the anomaly
     #applies a buff or debuff effect to the player
     #iterates the player's anomaly counter
@@ -471,10 +526,66 @@
 ########################
 ###### itemGen.py ######
 ########################
-#just used by dev/enterprising player to add items to the games item lists outside the game
+#create item objects that will benefit the player so they are ready for the final boss
+#give the items methods that would allow them to modify the players stats
+    #pass the player as a parameter to the item method
+    #have the method check what stat the item changes
+    #modify the stat
+    #return the player object to the game
+#to use an item, the user inputs what catagory they want to select from
+#the program prints the names of all the available item from the selected catagory
+#the item is then applied
 
-#createItem
-    #used on the dev end to add an object to the game
-    #takes stat affected, name of the object, how much it boosts the stat
-    #constructs an Item object
-    #appends it to gameItems.item
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##Items for final project:
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+##
+##plasma shield: permanent 2 point boost to shields
+##deflector shield: permanent 3 point boost to shileds
+##kojima field: permanent 5 point boost to shields
+##spiral shield: permanent 10 point boost to shields
+##
+##reinforced armor: permanent 2 point boost to armor
+##titanium plating: permanent 3 point boost to armor
+##adamantium lining: permanent 5 point boost to armor
+##star metal coating: permanent 10 point boost to armor
+##
+##enhanced FTL drive: permanent 2 point boost to speed
+##K-F drive: permanent 3 point boost to speed
+##warp drive: permanent 5 point boost to speed
+##quantum drive: permanent 10 point boost to speed
+##
+##enhanced lasers: permanent 2 point boost to energy
+##PPC: permanent 3 point boost to energy
+##turbo cannon: permanent 5 point boost to energy
+##partical lance: permanent 10 point boost to energy
+##
+##high velocity rounds: permanent 2 point boost to physical
+##rail guns: permanent 3 point boost to physical
+##anti matter rounds: permament 5 point boost to physical
+##FTL rounds: permanent 10 point boost to physical
+##
+
+##### combat items #####
+
+##insert remove shields item here
+##insert remove armor item here
+##insert reduce speed item here
+##insert damage item here
+##insert useless item here - FIREWORKSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+
+
+##reinforced hull: permanent 2 point boost to HP
+##endo-steel: permanent 3 point boost to HP
+##impact absorbers: permanent 5 point boost to HP
+##the power of friendship: permanent 10 point boost to HP
+
+#--------------------
+#Item drops
+#--------------------
+
+#each time an enemy is defeated, they will drop a random item from the items list
+#the rarity of the item dropped will depend on the dificaulty of the enemy that dropped it
+#using the item "map" the enemy dificaulty picks the row (rarity) of the item dropped, and a random number generator picks the column (type) of item dropped
+#the item selected for the drop is then passed to the player's inventory
+
