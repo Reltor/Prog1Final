@@ -1,13 +1,16 @@
+#create item objects that will benefit the player so they are ready for the final boss
+#give the items methods that would allow them to modify the players stats
+    #pass the player as a parameter to the item method
+    #have the method check what stat the item changes
+    #modify the stat
+    #return the player object to the game
 #to use an item, the user inputs what catagory they want to select from
-#the program prints the names of all the available buffs from the selected catagory
-#the buff is then applied
+#the program prints the names of all the available item from the selected catagory
+#the item is then applied
 
-##
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##Items for final project:
-##
-##nanite repair system: 1-10 points of HP healed
-##shield booster: 1-10 point increase to shields (temp)
-##nanite armor booster: 1-10 point increase to armor (temp)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ##
 ##plasma shield: permanent 2 point boost to shields
 ##deflector shield: permanent 3 point boost to shileds
@@ -38,18 +41,16 @@
 ##endo-steel: permanent 3 point boost to HP
 ##impact absorbers: permanent 5 point boost to HP
 ##the power of friendship: permanent 10 point boost to HP
-##
-##
 
+#--------------------
+#Item drops
+#--------------------
 
-#create a class for items to use
-#create items that will benefit the player so they are ready for the final boss
-#give the items methods that would allow them to modify the players stats
-#find a way to pass the player object through the items object while only changing the required stats
-    #pass the player as a parameter to the item method
-    #have the method check what stat the item changes
-    #modify the stat
-    #return the player object to the game
+#each time an enemy is defeated, they will drop a random item from the items list
+#the rarity of the item dropped will depend on the dificaulty of the enemy that dropped it
+#using the item "map" the enemy dificaulty picks the row (rarity) of the item dropped, and a random number generator picks the column (type) of item dropped
+#the item selected for the drop is then passed to the player's inventory
+
 
 
 
@@ -57,6 +58,8 @@
 
 
 #these 2 lines should go before any items are referenced
+import random
+import pickle
 '''
 import items
 itemList = items.createItems()
@@ -112,6 +115,10 @@ class Temp(Perm):
 
 def createItems():
     iList = []
+    commonList = []
+    unCommonList = []
+    rareList = []
+    superRareList = []
     hpList = []
     phyList = []
     armList = []
@@ -137,13 +144,13 @@ def createItems():
     ftlr = Perm("FTL rounds",10,"PHY")
     phyList.append(ftlr)
     #creats ARM items list
-    reArmor = ("reinforced armor",2,"ARM")
+    reArmor = Perm("reinforced armor",2,"ARM")
     armList.append(reArmor)
-    titanium = ("titanium plating",3,"ARM")
+    titanium = Perm("titanium plating",3,"ARM")
     armList.append(titanium)
-    adamantium = ("adamantium lining",5,"ARM")
+    adamantium = Perm("adamantium lining",5,"ARM")
     armList.append(adamantium)
-    star = ("star metal coating",10,"ARM")
+    star = Perm("star metal coating",10,"ARM")
     armList.append(star)
     #create SPD items list
     ftld = Perm("enhanced FTL drive",2,"SPD")
@@ -181,3 +188,46 @@ def createItems():
     iList.append(shdList)
     return iList
 
+#--------------------
+#Random item drops
+#--------------------
+
+
+#each time an enemy is defeated, they will drop a random item from the items list
+#the rarity of the item dropped will depend on the dificaulty of the enemy that dropped it
+#using the item "map" the enemy dificaulty picks the row (rarity) of the item dropped, and a random number generator picks the column (type) of item dropped
+#the item selected for the drop is then passed to the player's inventory
+def inventory():
+    inventory = []
+    pickle_in = open("inventory.inv","rb")
+    try:
+        inventory = pickle.load(pickle_in)
+    except EOFError:
+        inventory = []
+    inventory = pickle.load(pickle_in)
+    pickle_in.close()
+    for x in inventory:
+        print(x.name)
+
+def addItem(drop):
+    inventory = []
+    pickle_in = open("inventory.inv","rb")
+    try:
+        inventory = pickle.load(pickle_in)
+    except EOFError:
+        inventory = []
+    pickle_in.close()
+    inventory.append(drop)
+    pickle_out = open("inventory.inv","wb")
+    pickle.dump(inventory,pickle_out)
+    pickle_out.close
+
+
+
+
+def test():
+    itemList = createItems()
+    ranDrop = random.randint(0,5)
+    pickedItem = itemList[ranDrop][0]
+    print(pickedItem.name)
+        
