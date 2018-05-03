@@ -102,14 +102,14 @@ def combat(enemy,player):
     elif fled == True:
         pass
     else:
-        player.encounter += 1
+        player.encounter()
         ranDrop = random.randint(0,5)
         pickedItem = itemList[ranDrop][enemy.LV]
         items.addItem(pickedItem)
         print("you got",pickedItem.name)
 
 def main():
-    enemy = EnemyCreatorV2.medEnemy(1)[0]
+    enemy = EnemyCreator.medEnemy(1)[0]
     player = CharCreator.main()
     combat(enemy,player)
 

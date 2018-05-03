@@ -14,20 +14,22 @@
     #takes a number of coordinates, the currently existing coordinates and the x,y size of the board
     #create an empty list of new coordinates
     #generate a list X coordinates, checking to make sure they don't conflict with the ones that already exist
+        #if they don't conflict add them to the list of new coordinates
+        #once there are the required number of new coordinates, return them
     #return the new list
 
 #createBoard
     #takes the player as an argument, as well as x,y size of the board
-    #takes an x,y size of the board
     #creates a list of Y rows
     #in each row creates a list of X columns
-    #generates a random number of enemies, and their coordinates
-    #decides what parts of those enemies are going to be what level based on player level.
+    #generates a random number of enemies
+        #for each enemy generates its coordinates using generateCoordinates()
+        #random numbers 1-4 represent enemy level (EASY,MEDIUM,HARD,SUPERHARD), for each coordinate a random number is chosen
         #for each enemy
-            #use more random numbers to decide what level each enemy is
+            #generate a random number to decide the enemy level
             #use the enemy creator to make the enemy based on that level
-            #create an enemy tile with the enemy on it
-        #places the enemy tiles into the list representing the board, at their coordinates
+            #create an enemy tile with the enemy in it 
+        #place the enemy tiles into the list representing the board, at their designated coordinates
     #generate a random number of anomalies and coordinates
         #for each anomaly
             #randomly choose one from a file of definitions
@@ -42,8 +44,8 @@
         
 #createEnemyTile
     #creates an enemy using EnemyCreator.py
-    #creates an EnemyTile
-    #places the enemy in the tile and returns it
+    #instantiates an EnemyTile object using that enemy
+    #places the enemy in the tile and returns the tile
 
 #createAnomalyTile
     #picks an anomaly from the list of defined anomalies

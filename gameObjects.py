@@ -1,3 +1,4 @@
+
 #make it so if you haven't fought enough enemies, you are moved away from final boss.
 
 #cheatCODE - PlayerName - Firefly (sets moves to max, all stats as high as possible, enemy counter high enough for final boss, displays coordinate of final boss)
@@ -43,7 +44,6 @@ class Entity(object):
         print("enemy health = ",self.HP)
         #showStats() - Summary of statistics relevant to the player
     def getStats(self):
-        print("ship:",self.name)
         print("HP = ",self.HP)
         print("PHY = ",self.PHY)
         print("ARM = ",self.ARM)
@@ -54,7 +54,7 @@ class Entity(object):
 
 
 class Enemy(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name):
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name):
         super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
         #attributes from Entity Class----
             #attack
@@ -65,11 +65,8 @@ class Enemy(Entity):
             #speed
             #ascii art
             #location
-        self.LV = LV
         #own attributes - TODO
             #dropChances
-    def getLV(self):
-        return self.LV
             #isBoss (y/n)
             #enemyClass (pick from a list)
             #enemy object
@@ -83,11 +80,11 @@ class Enemy(Entity):
             
         
 class Player(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name,encounter,shipClass):
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,encounter,name,shipClass):
         super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
         self.__shipClass = shipClass
-        self.__name = name
         self.__encounters = encounter
+        self.__location = (0,0)
             #attributes----
                 #from Entity class
                     #attack (Corv - High, Destroyer - Medium, Cruiser - High, Battleship - High)
@@ -114,7 +111,14 @@ class Player(Entity):
         print("Number of encounters = ",self.__encounters)
         print("Player Name: " + self.__name)
         print("Ship Class: " + self.__shipClass)
-
+    def setLoc(self,coord):
+        self.__location = coord
+    def getLoc(self):
+        return self.__location
+    def getEncounters(self):
+        return self.__encounters
+    def encounter(self):
+        self.__encounters += 1
         
             
             
@@ -123,12 +127,12 @@ class Player(Entity):
 #################################
 
 class MapTile(object):
-    def __init__(self,occupied = False,player = False,boss = False,asciiArt = "",location = (0,0)):
+    def __init__(self,playerOcc = False,occupied = False,boss = False,asciiArt = "",location = (0,0)):
         ##### attributes #####
         #empty/occupied (is there an enemy or anomaly here)
         self.__occupied = occupied
         #player occupied (y/n)
-        self.__playerOccupied = player
+        self.__playerOccupied = playerOcc
         #is the boss here (y/n)
         self.__bossOccupied = boss
         #location (x,y coordinate)
@@ -136,10 +140,14 @@ class MapTile(object):
         #ascii art
         self.__asciiArt = asciiArt
     def __str__ (self):
-        return "M"
+        if self.__playerOccupied == True:
+            return "P"
+        else:
+            return "M"
     def getLoc(self):
         return self.__location
-        
+    def setPlayer(self,boolean):
+        self.__playerOccupied = boolean
 class AnomalyTile(MapTile):
     def __init__(self,occupied = True, player = False, boss = False,asciiArt = "", damage = 2, buff = "",location = (0,0)):
         super().__init__(occupied,player,boss,asciiArt,location)
@@ -185,6 +193,8 @@ class EnemyTile(MapTile):
         self.__enemy = enemy #enemy object
     def __str__(self):
         return "E"
+    def getEnemy(self):
+        return self.__enemy
     
 class BossTile(MapTile):
     def __init__(self,occupied = True,player = False,boss = True,asciiArt = "",location = (0,0)):
@@ -220,6 +230,8 @@ class Board(object):
     def __init__(self,rowList):
         #takes a list of rows of map objects
         self.__board = rowList
+        self.yLen = len(rowList)
+        self.xLen = len(rowList[1])
     def getBoard(self):
         #returns the whole board
         return self.__board
@@ -238,7 +250,16 @@ class Board(object):
         #or literally any time the player changes position
         self.__board[yCoord-1][xCoord-1] = newTile
 
-
+    def addPlayer(self,coord):
+        tile = self.__board[coord[1]-1][coord[0]-1]
+        tile.setPlayer(True)
+    def removePlayer(self,coord):
+        tile = self.__board[coord[1]-1][coord[0]-1]
+        tile.setPlayer(False)
+    def getY(self):
+        return self.yLen
+    def getX(self):
+        return self.xLen
 #################################
 ######## Misc Objects ###########
 #################################            

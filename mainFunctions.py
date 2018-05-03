@@ -1,7 +1,6 @@
-
 from os import system
 from msvcrt import getch
-import random,gameObjects, CharCreator, EnemyCreator, combat, items, pickle
+import random,gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time
 #################################
 ######## Creator Functions ######
 #################################
@@ -54,8 +53,7 @@ def createBoard(rows,columns,player): #rework player placement
     bossCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
     masterCoordList.append(bossCoord)
     bossTile = gameObjects.BossTile()
-    rowList[coord[1]-1][coord[0]-1] = bossTile
-    print(rowList[coord[1]-1][coord[0]-1])
+    rowList[bossCoord[1]-1][bossCoord[0]-1] = bossTile
     
     #random chance for a black hole, insta-death at another point
     blackHoleChance = 10
@@ -64,15 +62,15 @@ def createBoard(rows,columns,player): #rework player placement
         blackHoleTile = gameObjects.BlackHoleTile()
         blackHoleCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
         rowList[coord[1]-1][coord[0]-1] = blackHoleTile
-        print(rowList[coord[1]-1][coord[0]-1])
     
     #place the player
-    playerTile = gameObjects.PlayerTile(player) #create the tile with the player
+    playerTile = gameObjects.MapTile(playerOcc = True) #create the tile with the player
     playerCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
     player.setLoc(playerCoord)
     masterCoordList.append(playerCoord)
-    
-    rowList[coord[1]-1][coord[0]-1] = playerTile #place it on the board
+    print("player at: " + str(playerCoord))
+    time.sleep(1)
+    rowList[playerCoord[1]-1][playerCoord[0]-1] = playerTile #place it on the board
     
     #create empty tiles for all other points
     for row in rowList:
@@ -122,20 +120,55 @@ def move(board,player,num):
     DOWN = 80
     LEFT = 75 
     RIGHT = 77
+    valid = False
     if num == UP:
         oldCoord = player.getLoc()
         newY = player.getLoc()[1] - 1
-        if newY >= 0 and newY <= board.getY():
+        if newY > 0 and newY <= board.getY():
             newCoord = (player.getLoc()[0],newY)
             player.setLoc(newCoord)
             board.removePlayer(oldCoord)
             board.addPlayer(player.getLoc())
+            valid = True
+    elif num == DOWN:
+        oldCoord = player.getLoc()
+        newY = player.getLoc()[1] + 1
+        if newY > 0 and newY <= board.getY():
+            newCoord = (oldCoord[0],newY)
+            player.setLoc(newCoord)
+            board.removePlayer(oldCoord)
+            board.addPlayer(player.getLoc())
+            valid = True
+    elif num == LEFT:
+        oldCoord = player.getLoc()
+        newX = player.getLoc()[0] - 1
+        if newX > 0 and newX <= board.getX():
+            newCoord = (newX,player.getLoc()[1])
+            player.setLoc(newCoord)
+            board.removePlayer(oldCoord)
+            board.addPlayer(player.getLoc())
+            valid = True
+    elif num == RIGHT:
+        oldCoord = player.getLoc()
+        newX = player.getLoc()[0] + 1
+        if newX > 0 and newX <= board.getX():
+            newCoord = (newX,player.getLoc()[1])
+            player.setLoc(newCoord)
+            board.removePlayer(oldCoord)
+            board.addPlayer(player.getLoc())
+            valid = True
+    if valid == True:
+        print("called move")
+        print("player was at" + str(oldCoord))
+        print("player now at" + str(newCoord))
+        print("loc variable reads" + str(player.getLoc()))
     return board,player
 
 #################################
 ############# Main ##############
 #################################
-    
+def encounter(anomaly,player):
+    print("there was an encounter")
 def main():
     try:
         validResponse = False
@@ -176,19 +209,22 @@ def main():
         Q = 113
         S = 115
         I = 105
-        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I]
+        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I,224]
         while not playerWon and not playerDead:
         #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
             print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
-            #playerChoice = ord(getch())
-            playerChoice = UP
+            system("cls")
+            print(board.printBasicBoard())
+            playerChoice = ord(getch())
             if playerChoice in ordList:
-                if playerChoice in [SPECIALCHAR,UP,DOWN,LEFT,RIGHT]:
-                    board, player = move(board,player,playerChoice)
+                if playerChoice == 224:
+                    playerMove = ord(getch())
+                    board, player = move(board,player,playerMove)
                     newCoord = player.getLoc()
-                    currentTile = board.getRawBoard()[newCoord[1]][newCoord[0]]
+                    print(newCoord)
+                    currentTile = board.getBoard()[newCoord[1]-1][newCoord[0]-1]
                     if isinstance(currentTile,gameObjects.EnemyTile):
-                        player,combatResolution = combat(currentTile.getEnemy(),player)
+                        player,combatResolution = combat.combat(currentTile.getEnemy(),player)
                         if combatResolution == "W":
                             currentTile.removeEnemy()
                         elif combatResolution == "L":
@@ -207,7 +243,8 @@ def main():
                                 playerLoses(player)
                                 break
                     elif isinstance(currentTile,gameObjects.AnomalyTile):
-                        player = encounter(anomaly,player)
+                        anomaly = ""
+                        encounter(anomaly,player)
                 elif playerChoice == Q:
                     print("Press Q to quit immediately or S to save first")
                     playerChoice = ord(getch())
@@ -272,10 +309,9 @@ def main():
                 #quit
                     #warns the player to save first [Q] to quit, [S] to save
                         #if they choose to save, run the save function
-                        #else terminate the program.
-    except Exception as error:
-        errorFile = open("error.txt","a")
-        errorFile.write(str(error))
-        errorFile.close()
+                 #else terminate the program.
+    except Exception as e:
+        logging.basicConfig(filename='app.log',level=logging.INFO)
+        logging.exception(e)
 main()
-raw_input()
+
