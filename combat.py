@@ -1,14 +1,21 @@
 import time
 import random
 import gameObjects
+import EnemyCreatorV2
+import CharCreator
+import items
 
+itemList = items.createItems()
 def combat(enemy,player):
-    print("An enemy",enemy.name,"appears!")
+    print("")
+    print("An",enemy.name," appears!")
     print("---------------------")
-    print("hero stats:")
+    print("player stats:")
     print("---------------------")
-    player.getStats()
-    print("~~~~~~~~~~~~~~~~~~~~~")
+    player.showStats()
+    time.sleep(1)
+    print("")
+    print("---------------------")
     print("enemy stats:")
     print("---------------------")
     enemy.getStats()
@@ -27,13 +34,18 @@ def combat(enemy,player):
             print(">Physical    >Energy    >Flee    >Item")
             selection = ""
             while(selection not in ("Physical","Energy","Flee","Item")):
-                selection = input("-->")
+                selection = input("-->").title()
                 if selection == "Physical":
-                    print("you attack with physical weapons",enemy.name)
+                    print("you attack the",enemy.name,"with physical weapons")
+                    time.sleep(1)
                     enemy.takePDamage(player.PHY)
                 elif selection == "Energy":
-                    print("you use energy weapons on",enemy.name)
+                    print("you use energy weapons on the",enemy.name)
+                    time.sleep(1)
                     enemy.takeEDamage(player.ENG)
+                elif selection == "Item":
+                    print("pick and item to use: ")
+                    items.inventory()
                 elif selection == "Flee":
                     if enemy.SPD != 1337:
                         roll = random.randint(1,100)
@@ -61,20 +73,24 @@ def combat(enemy,player):
                     #remove item from inventory
                 curTurn = "Enemy"
         elif curTurn == "Enemy":
-            atType = random.tandint(1,100)
+            atType = random.randint(1,100)
             if enemy.PHY >= enemy.ENG:
                 if atType > 10:
-                    print("The",enemy.name,"attacks!")
+                    print("The",enemy.name,"attacks with physical weapons!")
+                    time.sleep(1)
                     player.takePDamage(enemy.PHY)
                 else:
                     print("The",enemy.name,"uses energy weapons!")
+                    time.sleep(1)
                     player.takeEDamage(enemy.ENG)
             elif enemy.PHY < enemy.ENG:
                 if atType > 10:
                     print("The",enemy.name,"uses energy weapons!")
+                    time.sleep(1)
                     player.takeEDamage(enemy.ENG)
                 else:
-                    print("The",enemy.name,"attacks!")
+                    print("The",enemy.name,"attacks with physical weapons!")
+                    time.sleep(1)
                     player.takePDamage(enemy.PHY)
             else:
                 print("An Error Occured...")
@@ -87,3 +103,14 @@ def combat(enemy,player):
         pass
     else:
         player.encounter += 1
+        ranDrop = random.randint(0,5)
+        pickedItem = itemList[ranDrop][enemy.LV]
+        items.addItem(pickedItem)
+        print("you got",pickedItem.name)
+
+def main():
+    enemy = EnemyCreatorV2.medEnemy(1)[0]
+    player = CharCreator.main()
+    combat(enemy,player)
+
+main()

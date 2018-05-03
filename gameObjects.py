@@ -1,4 +1,3 @@
-
 #make it so if you haven't fought enough enemies, you are moved away from final boss.
 
 #cheatCODE - PlayerName - Firefly (sets moves to max, all stats as high as possible, enemy counter high enough for final boss, displays coordinate of final boss)
@@ -8,7 +7,7 @@
 #################################
 
 class Entity(object):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD):
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name):
         #T0-DO - Make Below Private, add getters/setters
         self.HP = HP
         self.PHY = PHY
@@ -16,6 +15,7 @@ class Entity(object):
         self.SPD = SPD
         self.ENG = ENG
         self.SHD = SHD
+        self.name = name
         #TO-DO - Add Ascii and Location support
     #attributes from Entity Class----
             #attack
@@ -43,6 +43,7 @@ class Entity(object):
         print("enemy health = ",self.HP)
         #showStats() - Summary of statistics relevant to the player
     def getStats(self):
+        print("ship:",self.name)
         print("HP = ",self.HP)
         print("PHY = ",self.PHY)
         print("ARM = ",self.ARM)
@@ -53,8 +54,8 @@ class Entity(object):
 
 
 class Enemy(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD):
-        super().__init__(HP,PHY,ARM,SPD,ENG,SHD)
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name):
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
         #attributes from Entity Class----
             #attack
             #energy attack
@@ -64,8 +65,11 @@ class Enemy(Entity):
             #speed
             #ascii art
             #location
+        self.LV = LV
         #own attributes - TODO
             #dropChances
+    def getLV(self):
+        return self.LV
             #isBoss (y/n)
             #enemyClass (pick from a list)
             #enemy object
@@ -79,12 +83,11 @@ class Enemy(Entity):
             
         
 class Player(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,encounter,name,shipClass):
-        super().__init__(HP,PHY,ARM,SPD,ENG,SHD)
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name,encounter,shipClass):
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
         self.__shipClass = shipClass
         self.__name = name
         self.__encounters = encounter
-        self.__location = (0,0)
             #attributes----
                 #from Entity class
                     #attack (Corv - High, Destroyer - Medium, Cruiser - High, Battleship - High)
@@ -111,10 +114,7 @@ class Player(Entity):
         print("Number of encounters = ",self.__encounters)
         print("Player Name: " + self.__name)
         print("Ship Class: " + self.__shipClass)
-    def setLoc(self,coord):
-        self.__location = coord
-    def getLoc(self):
-        return self.__location
+
         
             
             
@@ -139,8 +139,7 @@ class MapTile(object):
         return "M"
     def getLoc(self):
         return self.__location
-    def setPlayer(boolean):
-        self.__playerOccupied = boolean
+        
 class AnomalyTile(MapTile):
     def __init__(self,occupied = True, player = False, boss = False,asciiArt = "", damage = 2, buff = "",location = (0,0)):
         super().__init__(occupied,player,boss,asciiArt,location)
@@ -221,8 +220,6 @@ class Board(object):
     def __init__(self,rowList):
         #takes a list of rows of map objects
         self.__board = rowList
-        self.yLen = len(rowList)
-        self.xLen = len(rowList[1])
     def getBoard(self):
         #returns the whole board
         return self.__board
@@ -241,16 +238,7 @@ class Board(object):
         #or literally any time the player changes position
         self.__board[yCoord-1][xCoord-1] = newTile
 
-    def addPlayer(self,coord):
-        tile = self.__board[coord[1]-1][coord[0]-1]
-        tile.setPlayer(True)
-    def removePlayer(self,coord):
-        tile = self.__board[coord[1]-1],[coord[0]-1]
-        tile.setPlayer(False)
-    def getY(self):
-        return self.yLen
-    def getX(self):
-        return self.xLen
+
 #################################
 ######## Misc Objects ###########
 #################################            
