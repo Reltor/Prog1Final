@@ -54,8 +54,9 @@ class Entity(object):
 
 
 class Enemy(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name):
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name):
         super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
+        self.__LV = LV
         #attributes from Entity Class----
             #attack
             #energy attack
@@ -77,6 +78,10 @@ class Enemy(Entity):
         #overwritten Methods
             #__str__
             #showStats() - No need to overwrite yet
+    def getLV(self):
+        return self.__LV
+    def setLV(self,newLV):
+        self.__LV = newLV
             
         
 class Player(Entity):
@@ -85,6 +90,7 @@ class Player(Entity):
         self.__shipClass = shipClass
         self.__encounters = encounter
         self.__location = (0,0)
+        self.__name = name
             #attributes----
                 #from Entity class
                     #attack (Corv - High, Destroyer - Medium, Cruiser - High, Battleship - High)
@@ -195,7 +201,8 @@ class EnemyTile(MapTile):
         return "E"
     def getEnemy(self):
         return self.__enemy
-    
+    def removeEnemy(self):
+        self.__enemy = None
 class BossTile(MapTile):
     def __init__(self,occupied = True,player = False,boss = True,asciiArt = "",location = (0,0)):
         super().__init__(occupied,player,boss,asciiArt,location)

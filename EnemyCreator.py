@@ -60,4 +60,4 @@ def shEnemy(NumOfEnemies):
         name = "enemy battleship"
         TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
         SHList.append(TempEnemy)
-return SHList
+    return SHList

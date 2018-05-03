@@ -164,6 +164,18 @@ def move(board,player,num):
         print("loc variable reads" + str(player.getLoc()))
     return board,player
 
+def save(board,player):
+    pickle_out = open("game.sav","wb")
+    pickle.dump(board,pickle_out)
+    pickle.dump(player,pickle_out)
+    pickle_out.close()
+
+
+def load(fileName):
+    pickle_in = open(fileName,"rb")
+    board = pickle.load(pickle_in)
+    player = pickle.load(pickle_in)
+    return board, player
 #################################
 ############# Main ##############
 #################################
@@ -183,9 +195,8 @@ def main():
             player = CharCreator.main()
             board = createBoard(7,7,player)
         elif loadSave == "Y":
-            board = loadGame()
-            board.showBoard()
-            player.gameSummary()
+            board,player = load("game.sav")
+            board.printBasicBoard()
 
        
     #main - handles the overarching game
@@ -227,11 +238,14 @@ def main():
                         player,combatResolution = combat.combat(currentTile.getEnemy(),player)
                         if combatResolution == "W":
                             currentTile.removeEnemy()
+                            board.setTile(newCoord[0],newCoord[1],gameObjects.MapTile(playerOcc = True))
+
                         elif combatResolution == "L":
                             playerLoses(player)
                             break
                         elif combatResolution == "R":
                             board,player = moveAway(board,player)
+                        time.sleep(2)
                     elif isinstance(currentTile,gameObjects.BossTile):
                         encountersNeeded = 5
                         if player.getEncounters() >= 5:

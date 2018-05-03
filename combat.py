@@ -1,7 +1,7 @@
 import time
 import random
 import gameObjects
-import EnemyCreatorV2
+import EnemyCreator
 import CharCreator
 import items
 
@@ -12,7 +12,7 @@ def combat(enemy,player):
     print("---------------------")
     print("player stats:")
     print("---------------------")
-    player.showStats()
+    player.getStats()
     time.sleep(1)
     print("")
     print("---------------------")
@@ -99,18 +99,22 @@ def combat(enemy,player):
         print("-----------------")
         print("you died")
         print("-----------------")
+        playerRes = "L"
     elif fled == True:
+        playerRes = "R"
         pass
     else:
         player.encounter()
         ranDrop = random.randint(0,5)
-        pickedItem = itemList[ranDrop][enemy.LV]
+        level = enemy.getLV()
+        pickedItem = itemList[ranDrop][level]
         items.addItem(pickedItem)
         print("you got",pickedItem.name)
+        playerRes = "W"
+    return player, playerRes
 
 def main():
     enemy = EnemyCreator.medEnemy(1)[0]
     player = CharCreator.main()
     combat(enemy,player)
 
-main()
