@@ -11,7 +11,9 @@ def weakEnemy(NumOfEnemies):
         SPD = random.randint(13,18)
         ENG = random.randint(8,13)
         SHD = random.randint(13,18)
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD)
+        LV = 0
+        name = "enemy corvette"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
         WList.append(TempEnemy)
     return WList
 
@@ -24,7 +26,9 @@ def medEnemy(NumOfEnemies):
         SPD = random.randint(8,13)
         ENG = random.randint(8,18)
         SHD = random.randint(8,13)
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD)
+        LV = 1
+        name = "enemy destroyer"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
         MList.append(TempEnemy)
     return MList
 
@@ -37,7 +41,9 @@ def hardEnemy(NumOfEnemies):
         SPD = random.randint(3,8)
         ENG = random.randint(13,18)
         SHD = random.randint(3,8)
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD)
+        LV = 2
+        name = "enemy cruiser"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
         HList.append(TempEnemy)
     return HList
 
@@ -50,6 +56,8 @@ def shEnemy(NumOfEnemies):
         SPD = random.randint(1,1)
         ENG = random.randint(13,18)
         SHD = random.randint(1,3)
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD)
+        LV = 3
+        name = "enemy battleship"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
         SHList.append(TempEnemy)
     return SHList
