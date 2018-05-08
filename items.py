@@ -86,24 +86,41 @@ class Perm(object):
         self.stat = stat
     def boostStat(self,Player):
         if self.stat == "HP":
-            Player.HP += self.boost
+            if Player.HP + self.boost >= 0:
+                Player.HP += self.boost
+            else:
+                Player.HP = 0
             return Player
         elif self.stat == "PHY":
-            Player.PHY += self.boost
+            if Player.PHY + self.boost >= 0:
+                Player.PHY += self.boost
+            else:
+                Player.PHY = 0
             return Player
         elif self.stat == "ARM":
-            Player.ARM += self.boost
+            if Player.ARM + self.boost >= 0:
+                Player.ARM += self.boost
+            else:
+                Player.ARM = 0
             return Player
         elif self.stat == "SPD":
-            Player.SPD += self.boost
+            if Player.SPD + self.boost >= 0:
+                Player.SPD += self.boost
+            else:
+                Player.SPD = 0
             return Player
         elif self.stat == "ENG":
-            Player.ENG += self.boost
+            if Player.ENG + self.boost >= 0:
+                Player.ENG += self.boost
+            else:
+                Player.ENG = 0
             return Player
         elif self.stat == "SHD":
-            Player.SHD += self.boost
+            if Player.SHD + self.boost >= 0:
+                Player.SHD += self.boost
+            else:
+                Player.SHD = 0
             return Player
-
         
 '''
 class Temp(Perm):
@@ -197,17 +214,53 @@ def createItems():
 #the rarity of the item dropped will depend on the dificaulty of the enemy that dropped it
 #using the item "map" the enemy dificaulty picks the row (rarity) of the item dropped, and a random number generator picks the column (type) of item dropped
 #the item selected for the drop is then passed to the player's inventory
-def inventory():
-    inventory = []
-    pickle_in = open("inventory.inv","rb")
-    try:
-        inventory = pickle.load(pickle_in)
-    except EOFError:
+def inventory(player):
+    inInventory = True
+    while inInventory:
+        i = 0
         inventory = []
-    inventory = pickle.load(pickle_in)
-    pickle_in.close()
-    for x in inventory:
-        print(x.name)
+        pickle_in = open("inventory.inv","rb")
+        try:
+            inventory = pickle.load(pickle_in)
+        except EOFError:
+            inventory = []
+        pickle_in.close()
+        print("------------------")
+        print("Select and item to use:")
+        print("------------------")
+        print("Or press B to exit")
+        print("------------------")
+        for x in inventory:
+            print(i,") ",end="")
+            print(x.name)
+            i += 1
+        choice = input("-->")
+        valid = False
+        while not valid:
+            try:
+                choice = int(choice)
+                if choice not in range(len(inventory)):
+                    choice = input("-->")
+                else:
+                    valid = True
+            except ValueError:
+                if choice != "b" and choice != "B":
+                    choice = input("-->")
+                else:
+                    valid = True
+        if choice == "b" or choice == "B":
+            return player,"Player"
+            inInventory = False
+        else:
+            choice = int(choice)
+            player = inventory[choice].boostStat(player)
+            del inventory[choice]
+            player.getStats()
+            pickle_out = open("inventory.inv","wb")
+            pickle.dump(inventory,pickle_out)
+            pickle_out.close
+            return player,"Enemy"
+            inInventory = False
 
 def addItem(drop):
     inventory = []
