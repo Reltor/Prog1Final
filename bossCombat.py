@@ -6,9 +6,9 @@ import CharCreator
 import items
 
 itemList = items.createItems()
-def combat(enemy,player):
+def combat(boss,player):
     print("")
-    print("An",enemy.name," appears!")
+    print("The big bad",boss.name," appears!")
     print("---------------------")
     print("player stats:")
     print("---------------------")
@@ -18,10 +18,10 @@ def combat(enemy,player):
     print("---------------------")
     print("enemy stats:")
     print("---------------------")
-    enemy.getStats()
-    if enemy.SPD > player.SPD:
+    boss.getStats()
+    if boss.SPD > player.SPD:
         curTurn = "Enemy"
-    elif player.SPD > enemy.SPD:
+    elif player.SPD > boss.SPD:
         curTurn = "Player"
     else:
         if random.randint(1,2) == 1:
@@ -29,7 +29,7 @@ def combat(enemy,player):
         else:
             curTurn = "Enemy"
     fled = False
-    while player.HP > 0 and enemy.HP > 0 and not fled:
+    while player.HP > 0 and boss.HP > 0 and not fled:
         if curTurn == "Player":
             print(">Physical    >Energy    >Flee    >Item")
             selection = ""
@@ -38,65 +38,67 @@ def combat(enemy,player):
                 if selection == "Physical":
                     print("you attack the",enemy.name,"with physical weapons")
                     time.sleep(1)
-                    enemy.takePDamage(player.PHY)
+                    boss.takePDamage(player.PHY)
                     curTurn = "Enemy"
                 elif selection == "Energy":
                     print("you use energy weapons on the",enemy.name)
                     time.sleep(1)
-                    enemy.takeEDamage(player.ENG)
+                    boss.takeEDamage(player.ENG)
                     curTurn = "Enemy"
                 elif selection == "Item":
                     print("pick and item to use: ")
                     player,curTurn = items.inventory(player)
                 elif selection == "Flee":
-                    if enemy.SPD != 1337:
-                        roll = random.randint(1,100)
-                        if player.SPD > enemy.SPD:
-                            fleeChance = 90
-                        else:
-                            fleeChance = 50
-                        if roll <= fleeChance:
-                            print("-----------")
-                            print("you Fled")
-                            print("-----------")
-                            fled = True
-                            time.sleep(1)
-                        else:
-                            print("failed to flee")
-                            time.sleep(1)
-                            curTurn = "Enemy"
-                    else:
-                        print("failed to flee")
-                        time.sleep(1)
+                    print("You can not run from a trainer battle.")
+                elif selection == "Item":
+                    pass
+                    #list of usable items
+                    #use "while selection not in" to make sure input is an item
+                    #activate item buff
+                    #remove item from inventory
         elif curTurn == "Enemy":
             atType = random.randint(1,100)
-            if enemy.PHY >= enemy.ENG:
+            if boss.PHY >= boss.ENG:
                 if atType > 10:
-                    print("The",enemy.name,"attacks with physical weapons!")
+                    print("The big bad",boss.name,"fires upon you with physical weapons!")
                     time.sleep(1)
-                    player.takePDamage(enemy.PHY)
+                    player.takePDamage(boss.PHY)
                 else:
-                    print("The",enemy.name,"uses energy weapons!")
+                    print("The big bad",boss.name,"fires energy weapons! Those are hot stuff!")
                     time.sleep(1)
-                    player.takeEDamage(enemy.ENG)
-            elif enemy.PHY < enemy.ENG:
+                    player.takeEDamage(boss.ENG)
+            elif boss.PHY < boss.ENG:
                 if atType > 10:
-                    print("The",enemy.name,"uses energy weapons!")
+                    print("The big bad",boss.name,"uses energy weapons! Those are hot stuff!")
                     time.sleep(1)
-                    player.takeEDamage(enemy.ENG)
+                    player.takeEDamage(boss.ENG)
                 else:
-                    print("The",enemy.name,"attacks with physical weapons!")
+                    print("The",boss.name,"fires upon you with physical weapons!")
                     time.sleep(1)
-                    player.takePDamage(enemy.PHY)
+                    player.takePDamage(boss.PHY)
             else:
                 print("An Error Occured...")
             curTurn = "Player"
     if player.HP <= 0:
         print("-----------------")
-        print("you died")
+        print("you faught valiently in the final battle but alass, the big bad",boss.name,"was too much for you. \n Better luck next time!")
         print("-----------------")
         playerRes = "L"
     elif fled == True:
+        print("wait, how did you? um... this isn't suposed to be possible...")
+        time.sleep(1)
+        print("well, guess we are here now.")
+        time.sleep(1)
+        print("maybe you should close this window.")
+        time.sleep(10)
+        print("why are you still here?")
+        time.sleep(2)
+        print("are you looking for an easter egg? because there isn't one, this is a serious error, you were never meant to get here.")
+        time.sleep(10)
+        print("you aren't going to close this are you?")
+        time.sleep(1)
+        print("fine, i'll do it myself.")
+        player.HP = 0
         playerRes = "R"
         pass
     else:
