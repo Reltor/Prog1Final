@@ -1,6 +1,6 @@
 from os import system
 from msvcrt import getch
-import random,gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time
+import random, gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time, encounter
 #################################
 ######## Creator Functions ######
 #################################
@@ -59,7 +59,11 @@ def createBoard(rows,columns,player): #rework player placement
     blackHoleChance = 10
     blackHoleInt = random.randint(0,blackHoleChance)
     if blackHoleInt == 1:
-        blackHoleTile = gameObjects.BlackHoleTile()
+        anomalyFile = open("anomaly.anome")
+        pickle.load(anomalyFile)
+        blackHole = pickle.load(anomalyFile)
+        anomalyFile.close()
+        blackHoleTile = gameObjects.BlackHoleTile(anomaly)
         blackHoleCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
         rowList[coord[1]-1][coord[0]-1] = blackHoleTile
     
@@ -104,8 +108,12 @@ def createEnemyTile(coord):
 
 def createAnomalyTile(coord):
     #load anomaly definitions file
+    anomalyImport =  open("anomaly.anome","rb")
+    anomalyList = pickle.load(anomalyImport)
+    anomaly = random.choice(anomalyList)
+    anomalyImport.close()
     #randomly select one and load its object (pickle)
-    anomalyTile = gameObjects.AnomalyTile(location = coord)
+    anomalyTile = gameObjects.AnomalyTile(anomaly,location = coord)
     #return the object
     return anomalyTile
 
@@ -165,7 +173,8 @@ def move(board,player,num):
     return board,player
 
 def save(board,player):
-    pickle_out = open("game.sav","wb")
+    fileName = str(input("Save As: "))
+    pickle_out = open(fileName + ".sav","wb")
     pickle.dump(board,pickle_out)
     pickle.dump(player,pickle_out)
     pickle_out.close()
@@ -179,8 +188,7 @@ def load(fileName):
 #################################
 ############# Main ##############
 #################################
-def encounter(anomaly,player):
-    print("there was an encounter")
+
 def main():
     try:
         validResponse = False
@@ -195,7 +203,8 @@ def main():
             player = CharCreator.main()
             board = createBoard(7,7,player)
         elif loadSave == "Y":
-            board,player = load("game.sav")
+            fileName = str(input("Input Saved Game's FileName"))
+            board,player = load(fileName + ".sav")
             board.printBasicBoard()
 
        
@@ -220,7 +229,8 @@ def main():
         Q = 113
         S = 115
         I = 105
-        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I,224]
+        T = 116
+        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I,T,224]
         while not playerWon and not playerDead:
         #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
             print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
@@ -257,8 +267,9 @@ def main():
                                 playerLoses(player)
                                 break
                     elif isinstance(currentTile,gameObjects.AnomalyTile):
-                        anomaly = ""
-                        encounter(anomaly,player)
+                        anomaly = currentTile.getAnomaly()
+                        player = encounter.main(anomaly,player)
+                        board.setTile(newCoord[0],newCoord[1],gameObjects.MapTile(playerOcc = True))
                 elif playerChoice == Q:
                     print("Press Q to quit immediately or S to save first")
                     playerChoice = ord(getch())
@@ -277,6 +288,10 @@ def main():
                     #command to close window
                 elif playerChoice == I:
                     player.useItem()
+                elif playerChoice == T:
+                    player.getStats()
+                    print("Press Any Key to Continue...")
+                    playerKey = getch()
                 else:
                     print("Invalid")
             #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory]

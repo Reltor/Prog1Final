@@ -126,7 +126,9 @@ class Player(Entity):
     def encounter(self):
         self.__encounters += 1
         
-            
+class Boss(Enemy):
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name):
+        super().__init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name)
             
 #################################
 ######## Map Tiles ##############
@@ -155,7 +157,7 @@ class MapTile(object):
     def setPlayer(self,boolean):
         self.__playerOccupied = boolean
 class AnomalyTile(MapTile):
-    def __init__(self,occupied = True, player = False, boss = False,asciiArt = "", damage = 2, buff = "",location = (0,0)):
+    def __init__(self,anomaly,occupied = True, player = False, boss = False, asciiArt = "",location = (0,0)):
         super().__init__(occupied,player,boss,asciiArt,location)
             #attributes from MapTile
                 #empty/occupied (occupied)
@@ -164,16 +166,15 @@ class AnomalyTile(MapTile):
                 #location
                 #ascii art
         #### seperate attributes ####
-        #damage (how much damage it would do the the player landing on it)
-        self.__damage = damage
-        #debuff/buff (any buff or de-buff it would apply
-        self.__buff = buff
+        self.__anomaly = anomaly
+    def getAnomaly(self):
+        return self.__anomaly
     def __str__(self):
         return "A"
         
 class BlackHoleTile(AnomalyTile):
-    def __init__(self,occupied = True, player = False, boss = False,asciiArt = "", damage = 1000, buff = "",location = (0,0)):
-        super().__init__(occupied,player,boss,asciiArt,damage,buff,location)
+    def __init__(self,anomaly,occupied = True, player = False, boss = False,asciiArt = "",location = (0,0)):
+        super().__init__(anomaly,occupied,player,boss,asciiArt,location)
         #attributes from AnomalyTile
             #empty/occupied (occupied)
             #player occupied (y/n)
@@ -271,22 +272,22 @@ class Board(object):
 ######## Misc Objects ###########
 #################################            
     
-class Buff(object):
-    def __init__(self):
-        #attributes
-            #stat affected (atk, spd, armor, shield, energyatk, movement?)
-            #quantity of buff/debuff (negative number for a debuff)
-            #name of buff/debuff
-        pass
+class Anomaly(object):
+    def __init__(self,effectItem,flavorText,art):
+        self.__item = effectItem
+        self.__flavorText = flavorText
+        self.__art = art
+    def getArt(self):
+        return self.__art
+    def get(self):
+        return self.__item
+    def showFlavorText(self):
+        print(self.__flavorText)
+    def applyEffect(self,player):
+        player = self.__item.boostStat(player)
+        return player
+    
         
-class Item(object):
-    def __init__(self):
-            #attributes
-                #name
-                #flavor text
-                #stat affected (atk, spd, armor, shield, eneryatk, none)
-                #buff object
-        pass
 
 
         

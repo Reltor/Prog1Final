@@ -127,7 +127,7 @@
         #display the board
         #display character stats and other relevant info
     #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
-        #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory]
+        #player presses key move -> [UP/DOWN/LEFT/RIGHT ARROWS] OR Q [Quit] OR S [Save] OR I [Inventory] OR G [Stats]
             #player moves
                 #MOVE()
                 #player moves to an occupied tile
@@ -172,6 +172,9 @@
                 #warns the player to save first [Q] to quit, [S] to save
                     #if they choose to save, run the save function
                     #else terminate the program.
+            #stats
+                #call display stats method
+                #press any key to continue
 
 #playerWins
     #replace boss tile with playerTile
@@ -271,7 +274,7 @@
             #ascii art
             #location
             #hp
-        #own attributes - TODO
+        #own attributes 
             #dropChances - enemies can drop items
             #isBoss (y/n) - flags whether this enemy is considered a final boss
             #enemyClass (pick from a list)
@@ -322,7 +325,48 @@
                     #takePDamage()
                         #use Entity version
                         #add the damage to damage taken
-            
+#class Boss(enemy)
+    #inherits from enemy and from enemy inherits from entity
+        #attributes from Entity Class----
+            #attack
+            #energy attack
+            #armor
+            #shields
+            #name
+            #speed
+            #ascii art
+            #location
+            #hp
+        #attributes from Enemy Class 
+            #isBoss (y) - flags whether this enemy is considered a final boss
+            #enemyClass (pick from a list)
+        #own attributes
+            #openingSpeech()
+            #randomLinesDMG()
+                #lines the boss can say when they take damage
+            #randomLinesATK()
+                #lines the boss can say when they give damage
+        #methods from Entity
+            #takeEDamage()  
+            #takePDamage()
+            #changeXStat()
+        #overwritten Methods
+            #__str__
+            #showStats()
+                #additionally displays drop tables, whether its the boss, and the enemy class\
+        #newMethods
+            #openingDialogue()
+                #returns an opening speech for the boss
+            #damageLine()
+                #random num from 1 -> (length of random lines list * 2)
+                #if that number is in the index range of the random lines list
+                    #returns a random line from the randomLinesDMG list
+                #else returns string "No Line"
+            #attackLine()
+                #random num from 1 -> (length of random lines list * 2)
+                #if that number is in the index range of the random lines list
+                    #returns a random line from the randomLinesATK list
+                #else returns string "No Line"
     #################################
     ######## Map Tiles ##############
     #################################
@@ -358,9 +402,9 @@
                 #is the boss here (n)
                 #location
                 #ascii art
+     
         #### seperate attributes ####
-        #damage (how much damage it would do the the player landing on it)
-        #debuff/buff (any buff or de-buff it would apply
+            #anomaly - the anomaly at this point 
         
         
 # a special subtype of anomaly that kills the player when they land on it, very low chance to spawn        
@@ -399,9 +443,7 @@
                 #location
                 #ascii art
             #seperate
-                #boss dialogue
-                    #ready to encounter dialogue
-                    #not ready (go away) dialogue
+                #boss object
         
 
 #a Board is a list of lists of MapTile objects. It has methods to display itself, as well as replace tiles when their state changes. (player moves, enemy dies, etc)        
@@ -430,12 +472,6 @@
     ######## Misc Objects ###########
     #################################            
 
-#A buff object can be carried by an object, anomaly, etc. It can apply effects that either strengthen or weaken the player.    
-#Buff
-        #attributes
-            #stat affected (atk, spd, armor, shield, energyatk, movement?)
-            #quantity of buff/debuff (negative number for a debuff)
-            #name of buff/debuff
 
 
 #enemies can drop items, items can be anything from just a name with some flavor text, to an item that applies an actual buff effect.        
@@ -452,15 +488,6 @@
 #class PermItem
     #an item that applies a permanent stat boost
     
-#class TempItem
-    #an item that applies a stat boost for X combat turns
-    #x is defined by a time variable that is decremented every time the player ends a combat turn.
-
-    #method: decreaseTimer(t) - reduces the amount of time left on the object by t
-        #if timer is set low enough to hit 0 or lower, a running check of some kind will remove the effects on the player
-
-#class OneUseItem
-    #an item that applies a one combat turn stat boost (duration 1)
 
 
 #class Anomaly
@@ -471,6 +498,9 @@
         #art
         #name
         #??????
+    #methods
+        #applyEffects(player)
+            #apply the buff/debuff to the target
 
 
 
