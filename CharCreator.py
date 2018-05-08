@@ -4,6 +4,8 @@ import gameObjects
 
 
 def main():
+    inventoryFile = open("inventory.inv","w")
+    inventoryFile.close()
     Pclass = input("Please select a ship: >corvette >destroyer >cruiser >battle ship ")
     while(Pclass not in ("corvette","destroyer","cruiser","battle ship")):
         Pclass = input("-->")

@@ -1,4 +1,4 @@
-
+import EnemyCreator
 #make it so if you haven't fought enough enemies, you are moved away from final boss.
 
 #cheatCODE - PlayerName - Firefly (sets moves to max, all stats as high as possible, enemy counter high enough for final boss, displays coordinate of final boss)
@@ -126,10 +126,15 @@ class Player(Entity):
     def encounter(self):
         self.__encounters += 1
         
-class Boss(Enemy):
+class Boss(Entity):
     def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name):
-        super().__init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name)
-            
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
+        self.__LV = LV
+        self.__phrase = ["YOU CAN NOT HURT ME!","MWAHAHA, YOU THINK THAT WILL WORK?","Ouch, I mean, THAT DID NOTHING!"]
+    def sayJunk(self):
+        phrase = random.randint[0,2]
+        print(self.__phrase[phrase])
+
 #################################
 ######## Map Tiles ##############
 #################################
@@ -205,8 +210,8 @@ class EnemyTile(MapTile):
     def removeEnemy(self):
         self.__enemy = None
 class BossTile(MapTile):
-    def __init__(self,occupied = True,player = False,boss = True,asciiArt = "",location = (0,0)):
-        super().__init__(occupied,player,boss,asciiArt,location)
+    def __init__(self,boss="",occupied = True,player = False,bossOcc = True,asciiArt = "",location = (0,0)):
+        super().__init__(occupied,player,bossOcc,asciiArt,location)
             #attributes from MapTile
                 #empty/occupied (occupied)
                 #player occupied (y/n)
@@ -217,10 +222,11 @@ class BossTile(MapTile):
                 #boss dialogue
                     #ready to encounter dialogue
                     #not ready (go away) dialogue
-        pass
+        self.__boss = EnemyCreator.weakEnemy(1)[0]
     def __str__(self):
         return "B"
-
+    def getBoss(self):
+        return self.__boss
 class PlayerTile(MapTile):
     def __init__(self,player,occupied = True,playerOcc = True,boss = False,asciiArt = "",location = (0,0)):
         super().__init__(occupied,playerOcc,boss,asciiArt,location)

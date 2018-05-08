@@ -1,6 +1,6 @@
 from os import system
 from msvcrt import getch
-import random, gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time, encounter
+import random, gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time, encounter, bossCombat
 #################################
 ######## Creator Functions ######
 #################################
@@ -28,14 +28,14 @@ def createBoard(rows,columns,player): #rework player placement
         for column in range(columns):
             columnList.append("")
         rowList.append(columnList)
-    numEnemies = random.randint(2,4) #number range currently hardcoded, want to change
+    numEnemies = random.randint(4,8) #number range currently hardcoded, want to change
     masterCoordList = []
     
     enemyCoordList = generateCoordinates(masterCoordList[:],numEnemies,columns,rows)
     for coord in enemyCoordList:
         masterCoordList.append(coord)
         
-    numAnomalies = random.randint(2,4)
+    numAnomalies = random.randint(4,8)
     anomalyCoordList = generateCoordinates(masterCoordList[:],numAnomalies,columns,rows)
     for coord in anomalyCoordList:
         masterCoordList.append(coord)
@@ -171,7 +171,33 @@ def move(board,player,num):
         print("player now at" + str(newCoord))
         print("loc variable reads" + str(player.getLoc()))
     return board,player
-
+def moveAway(board,player):
+    UP = 72
+    DOWN = 80
+    LEFT = 75 
+    RIGHT = 77
+    oldCoord = player.getLoc()
+    ordList = [UP,DOWN,LEFT,RIGHT]
+    if oldCoord[0] >= board.getX():
+        ordList.remove(RIGHT)
+    if oldCoord[0] <= 0:
+        ordList.remove(LEFT)
+    if oldCoord[1] >= board.getY():
+        ordList.remove(DOWN)
+    if oldCoord[1] <= 0:
+        ordList.remove(UP)
+    direction = random.choice(ordList)
+    board,player = move(board,player,direction)
+    safe = False
+    while not safe:
+        
+        newCoord = player.getLoc()
+        currentTile = board.getBoard()[newCoord[1]-1][newCoord[0]-1]
+        if not isinstance(currentTile,gameObjects.AnomalyTile) and not isinstance(currentTile,gameObjects.EnemyTile):
+            safe = True
+        else:
+            board,player = moveAway(board,player)
+    return board,player
 def save(board,player):
     fileName = str(input("Save As: "))
     pickle_out = open(fileName + ".sav","wb")
@@ -236,6 +262,9 @@ def main():
             print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
             system("cls")
             print(board.printBasicBoard())
+            currentLoc = player.getLoc()
+            startTile = board.getBoard()[currentLoc[1]-1][currentLoc[0]-1]
+
             playerChoice = ord(getch())
             if playerChoice in ordList:
                 if playerChoice == 224:
@@ -259,13 +288,15 @@ def main():
                     elif isinstance(currentTile,gameObjects.BossTile):
                         encountersNeeded = 5
                         if player.getEncounters() >= 5:
-                            player,combatResolution = combat(currentTile.getBoss(),player)
+                            player,combatResolution = bossCombat.combat(currentTile.getBoss(),player)
                             if combatResolution == "W":
                                 playerWins(board,player)
                                 break
                             elif combatResolution == "L":
                                 playerLoses(player)
                                 break
+                        else:
+                            moveAway(board,player)
                     elif isinstance(currentTile,gameObjects.AnomalyTile):
                         anomaly = currentTile.getAnomaly()
                         player = encounter.main(anomaly,player)
