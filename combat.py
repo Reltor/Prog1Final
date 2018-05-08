@@ -45,7 +45,7 @@ def combat(enemy,player):
                     enemy.takeEDamage(player.ENG)
                 elif selection == "Item":
                     print("pick and item to use: ")
-                    items.inventory()
+                    player = items.inventory(player)
                 elif selection == "Flee":
                     if enemy.SPD != 1337:
                         roll = random.randint(1,100)
