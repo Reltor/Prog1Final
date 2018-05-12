@@ -1,0 +1,66 @@
+ERROR:root:'Enemy' object has no attribute '_Enemy__art'
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 277, in main
+    player,combatResolution = combat.combat(currentTile.getEnemy(),player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\combat.py", line 41, in combat
+    print (enemy.getArt())
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\gameObjects.py", line 86, in getArt
+    return self.__art
+AttributeError: 'Enemy' object has no attribute '_Enemy__art'
+ERROR:root:'charmap' codec can't decode byte 0x81 in position 30: character maps to <undefined>
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 230, in main
+    board = createBoard(7,7,player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 63, in createBoard
+    pickle.load(anomalyFile)
+  File "C:\Users\Jarod\AppData\Local\Programs\Python\Python36\lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 30: character maps to <undefined>
+ERROR:root:'Player' object has no attribute 'useItem'
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 321, in main
+    player.useItem()
+AttributeError: 'Player' object has no attribute 'useItem'
+ERROR:root:name 'enemy' is not defined
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 291, in main
+    player,combatResolution = bossCombat.combat(currentTile.getBoss(),player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\bossCombat.py", line 44, in combat
+    print("you use energy weapons on the",enemy.name)
+NameError: name 'enemy' is not defined
+ERROR:root:'charmap' codec can't decode byte 0x81 in position 30: character maps to <undefined>
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 230, in main
+    board = createBoard(7,7,player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 63, in createBoard
+    pickle.load(anomalyFile)
+  File "C:\Users\Jarod\AppData\Local\Programs\Python\Python36\lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 30: character maps to <undefined>
+ERROR:root:'charmap' codec can't decode byte 0x81 in position 30: character maps to <undefined>
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 231, in main
+    board = createBoard(7,7,player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 63, in createBoard
+    pickle.load(anomalyFile)
+  File "C:\Users\Jarod\AppData\Local\Programs\Python\Python36\lib\encodings\cp1252.py", line 23, in decode
+    return codecs.charmap_decode(input,self.errors,decoding_table)[0]
+UnicodeDecodeError: 'charmap' codec can't decode byte 0x81 in position 30: character maps to <undefined>
+ERROR:root:'str' object has no attribute 'append'
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 231, in main
+    board = createBoard(7,7,player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 86, in createBoard
+    gameBoard.printBasicBoard()
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\gameObjects.py", line 263, in printBasicBoard
+    rowString.append(column)
+AttributeError: 'str' object has no attribute 'append'
+ERROR:root:must be str, not MapTile
+Traceback (most recent call last):
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 231, in main
+    board = createBoard(7,7,player)
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\mainFunctions.py", line 86, in createBoard
+    gameBoard.printBasicBoard()
+  File "C:\Users\Jarod\Downloads\Prog1Final-master\Prog1Final-master\gameObjects.py", line 263, in printBasicBoard
+    rowString += column
+TypeError: must be str, not MapTile

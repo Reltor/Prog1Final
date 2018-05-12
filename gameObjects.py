@@ -1,5 +1,5 @@
 import EnemyCreator
-#make it so if you haven't fought enough enemies, you are moved away from final boss.
+import os
 
 #cheatCODE - PlayerName - Firefly (sets moves to max, all stats as high as possible, enemy counter high enough for final boss, displays coordinate of final boss)
 
@@ -8,7 +8,7 @@ import EnemyCreator
 #################################
 
 class Entity(object):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name):
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,name,art):
         #T0-DO - Make Below Private, add getters/setters
         self.HP = HP
         self.PHY = PHY
@@ -17,6 +17,7 @@ class Entity(object):
         self.ENG = ENG
         self.SHD = SHD
         self.name = name
+        self.__art = art
         #TO-DO - Add Ascii and Location support
     #attributes from Entity Class----
             #attack
@@ -51,11 +52,12 @@ class Entity(object):
         print("ENG = ",self.ENG)
         print("SHD = ",self.SHD)
         #__str__() - Prints everything including background data - for debugging
-
+    def getArt(self):
+        return self.__art
 
 class Enemy(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name):
-        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,LV,name,art = ""):
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name,art)
         self.__LV = LV
         #attributes from Entity Class----
             #attack
@@ -82,11 +84,12 @@ class Enemy(Entity):
         return self.__LV
     def setLV(self,newLV):
         self.__LV = newLV
+
             
         
 class Player(Entity):
-    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,encounter,name,shipClass):
-        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name)
+    def __init__(self,HP,PHY,ARM,SPD,ENG,SHD,encounter,name,shipClass,art=""):
+        super().__init__(HP,PHY,ARM,SPD,ENG,SHD,name,art)
         self.__shipClass = shipClass
         self.__encounters = encounter
         self.__location = (0,0)
@@ -251,13 +254,16 @@ class Board(object):
         return self.__board
     def printBasicBoard(self):
         #prints a basic graphic representation of the board
-        rowSep = "----------------------------------"
+        rowSep = "-------------------------------"
+        oswidth = os.get_terminal_size().columns
         for row in self.__board:
-            print(rowSep)
+            print(rowSep.center(oswidth))
+            rowString = "| "
             for column in row:
-                print(column, end=" |  ")
-            print()
-        print(rowSep)
+                rowString += str(column)
+                rowString += " | "
+            print(rowString.center(oswidth))
+        print(rowSep.center(oswidth))
     def setTile(self,xCoord,yCoord,newTile):
         #replaces a tile at the given coordinates with a new tile
         #useful if an enemy dies, or an anomaly is cleared

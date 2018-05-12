@@ -1,7 +1,8 @@
 import time
 import random
 import gameObjects
-
+import art
+ART = art.getArt("placeholdership")
 def weakEnemy(NumOfEnemies):
     WList = []
     for a in range (NumOfEnemies):
@@ -12,8 +13,8 @@ def weakEnemy(NumOfEnemies):
         ENG = random.randint(8,13)
         SHD = random.randint(13,18)
         LV = 0
-        name = "enemy corvette"
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
+        name = "Enemy Corvette"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name,art)
         WList.append(TempEnemy)
     return WList
 
@@ -27,8 +28,8 @@ def medEnemy(NumOfEnemies):
         ENG = random.randint(8,18)
         SHD = random.randint(8,13)
         LV = 1
-        name = "enemy destroyer"
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
+        name = "Enemy Destroyer"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name,art)
         MList.append(TempEnemy)
     return MList
 
@@ -42,8 +43,8 @@ def hardEnemy(NumOfEnemies):
         ENG = random.randint(13,18)
         SHD = random.randint(3,8)
         LV = 2
-        name = "enemy cruiser"
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
+        name = "Enemy Cruiser"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name,art)
         HList.append(TempEnemy)
     return HList
 
@@ -57,7 +58,7 @@ def shEnemy(NumOfEnemies):
         ENG = random.randint(13,18)
         SHD = random.randint(1,3)
         LV = 3
-        name = "enemy battleship"
-        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name)
+        name = "Enemy Battleship"
+        TempEnemy = gameObjects.Enemy(HP,PHY,ARM,SPD,ENG,SHD,LV,name,art)
         SHList.append(TempEnemy)
     return SHList

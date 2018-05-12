@@ -7,17 +7,22 @@ import items
 
 itemList = items.createItems()
 def combat(boss,player):
+    border = "---------------------"
+
     print("")
     print("The big bad",boss.name," appears!")
-    print("---------------------")
+    print(border)
+    print("Known througout the galaxy as a menace, you are charged with taking down this darkest of evils")
+    print("Are you strong enough to face the oncoming storm?")
+    print(border)
     print("player stats:")
-    print("---------------------")
+    print(border)
     player.getStats()
     time.sleep(1)
     print("")
-    print("---------------------")
+    print(border)
     print("enemy stats:")
-    print("---------------------")
+    print(border)
     boss.getStats()
     if boss.SPD > player.SPD:
         curTurn = "Enemy"
@@ -31,17 +36,17 @@ def combat(boss,player):
     fled = False
     while player.HP > 0 and boss.HP > 0 and not fled:
         if curTurn == "Player":
-            print(">Physical    >Energy    >Flee    >Item")
+            print("Select your Action: >Physical    >Energy  >Item")
             selection = ""
             while(selection not in ("Physical","Energy","Flee","Item")):
                 selection = input("-->").title()
                 if selection == "Physical":
-                    print("you attack the",enemy.name,"with physical weapons")
+                    print("You attack the",boss.name,"with physical weapons")
                     time.sleep(1)
                     boss.takePDamage(player.PHY)
                     curTurn = "Enemy"
                 elif selection == "Energy":
-                    print("you use energy weapons on the",enemy.name)
+                    print("You use energy weapons on the",boss.name)
                     time.sleep(1)
                     boss.takeEDamage(player.ENG)
                     curTurn = "Enemy"
@@ -73,7 +78,7 @@ def combat(boss,player):
                     time.sleep(1)
                     player.takeEDamage(boss.ENG)
                 else:
-                    print("The",boss.name,"fires upon you with physical weapons!")
+                    print("The big bad",boss.name,"fires upon you with physical weapons!")
                     time.sleep(1)
                     player.takePDamage(boss.PHY)
             else:
@@ -81,7 +86,7 @@ def combat(boss,player):
             curTurn = "Player"
     if player.HP <= 0:
         print("-----------------")
-        print("you faught valiently in the final battle but alass, the big bad",boss.name,"was too much for you. \n Better luck next time!")
+        print("You faught valiantly in the final battle but alass, the big bad ",boss.name," was too much for you. \n Better luck next time!")
         print("-----------------")
         playerRes = "L"
     elif fled == True:
@@ -99,15 +104,9 @@ def combat(boss,player):
         time.sleep(1)
         print("fine, i'll do it myself.")
         player.HP = 0
-        playerRes = "R"
+        playerRes = "L"
         pass
     else:
-        player.encounter()
-        ranDrop = random.randint(0,5)
-        level = enemy.getLV()
-        pickedItem = itemList[ranDrop][level]
-        items.addItem(pickedItem)
-        print("you got",pickedItem.name)
         playerRes = "W"
     return player, playerRes
 

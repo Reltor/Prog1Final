@@ -4,19 +4,22 @@ import gameObjects
 import EnemyCreator
 import CharCreator
 import items
+from os import system
+import os
 
 itemList = items.createItems()
 def combat(enemy,player):
-    print("")
-    print("An",enemy.name," appears!")
+    system("cls")
+    print()
+    print("An",enemy.name,"appears!")
     print("---------------------")
-    print("player stats:")
+    print("Your Stats:")
     print("---------------------")
     player.getStats()
     time.sleep(1)
     print("")
     print("---------------------")
-    print("enemy stats:")
+    print("Enemy Stats:")
     print("---------------------")
     enemy.getStats()
     if enemy.SPD > player.SPD:
@@ -31,22 +34,27 @@ def combat(enemy,player):
     fled = False
     while player.HP > 0 and enemy.HP > 0 and not fled:
         if curTurn == "Player":
+            print("Choose Your Action!")
+            print("---------------------")
+            print()
             print(">Physical    >Energy    >Flee    >Item")
+            print()
+            print (enemy.getArt())
             selection = ""
             while(selection not in ("Physical","Energy","Flee","Item")):
                 selection = input("-->").title()
                 if selection == "Physical":
-                    print("you attack the",enemy.name,"with physical weapons")
+                    print("You attack the",enemy.name,"with physical weapons")
                     time.sleep(1)
                     enemy.takePDamage(player.PHY)
                     curTurn = "Enemy"
                 elif selection == "Energy":
-                    print("you use energy weapons on the",enemy.name)
+                    print("You use energy weapons on the",enemy.name)
                     time.sleep(1)
                     enemy.takeEDamage(player.ENG)
                     curTurn = "Enemy"
                 elif selection == "Item":
-                    print("pick and item to use: ")
+                    print("Pick an item to use: ")
                     player,curTurn = items.inventory(player)
                 elif selection == "Flee":
                     if enemy.SPD != 1337:
@@ -93,7 +101,7 @@ def combat(enemy,player):
             curTurn = "Player"
     if player.HP <= 0:
         print("-----------------")
-        print("you died")
+        print("You Died")
         print("-----------------")
         playerRes = "L"
     elif fled == True:
@@ -105,7 +113,19 @@ def combat(enemy,player):
         level = enemy.getLV()
         pickedItem = itemList[ranDrop][level]
         items.addItem(pickedItem)
-        print("you got",pickedItem.name)
+        time.sleep(1.5)
+        system("cls")
+        print()
+        print()
+        print()
+        oswidth = os.get_terminal_size().columns
+
+        print("Item Drop Acquired!".center(oswidth))
+        print("--------------------------".center(oswidth))
+        string = "You got " + pickedItem.name
+        print(string.center(oswidth))
+        print("--------------------------".center(oswidth))
+        time.sleep(3)
         playerRes = "W"
     return player, playerRes
 

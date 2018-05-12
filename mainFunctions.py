@@ -1,6 +1,6 @@
 from os import system
 from msvcrt import getch
-import random, gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time, encounter, bossCombat
+import random, gameObjects, CharCreator, EnemyCreator, combat, items, pickle, logging, time, encounter, bossCombat, anomalyCreator
 #################################
 ######## Creator Functions ######
 #################################
@@ -72,7 +72,7 @@ def createBoard(rows,columns,player): #rework player placement
     playerCoord = generateCoordinates(masterCoordList[:],1,columns,rows)[0]
     player.setLoc(playerCoord)
     masterCoordList.append(playerCoord)
-    print("player at: " + str(playerCoord))
+    #print("player at: " + str(playerCoord))
     time.sleep(1)
     rowList[playerCoord[1]-1][playerCoord[0]-1] = playerTile #place it on the board
     
@@ -166,10 +166,11 @@ def move(board,player,num):
             board.addPlayer(player.getLoc())
             valid = True
     if valid == True:
-        print("called move")
-        print("player was at" + str(oldCoord))
-        print("player now at" + str(newCoord))
-        print("loc variable reads" + str(player.getLoc()))
+        #print("called move")
+        #print("player was at" + str(oldCoord))
+        #print("player now at" + str(newCoord))
+        #print("loc variable reads" + str(player.getLoc()))
+        pass
     return board,player
 def moveAway(board,player):
     UP = 72
@@ -257,11 +258,15 @@ def main():
         I = 105
         T = 116
         ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I,T,224]
+        system("cls")
+        print("On the following map, you are marked as a 'P', enemies are 'E', various spacial anomalies are 'A' and your final challenge is marked as 'B'")
+        time.sleep(5)
         while not playerWon and not playerDead:
         #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
-            print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
             system("cls")
             print(board.printBasicBoard())
+            print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
+
             currentLoc = player.getLoc()
             startTile = board.getBoard()[currentLoc[1]-1][currentLoc[0]-1]
 
@@ -271,16 +276,14 @@ def main():
                     playerMove = ord(getch())
                     board, player = move(board,player,playerMove)
                     newCoord = player.getLoc()
-                    print(newCoord)
                     currentTile = board.getBoard()[newCoord[1]-1][newCoord[0]-1]
                     if isinstance(currentTile,gameObjects.EnemyTile):
                         player,combatResolution = combat.combat(currentTile.getEnemy(),player)
                         if combatResolution == "W":
                             currentTile.removeEnemy()
                             board.setTile(newCoord[0],newCoord[1],gameObjects.MapTile(playerOcc = True))
-
                         elif combatResolution == "L":
-                            playerLoses(player)
+                            playerDead = True
                             break
                         elif combatResolution == "R":
                             board,player = moveAway(board,player)
@@ -290,23 +293,25 @@ def main():
                         if player.getEncounters() >= 5:
                             player,combatResolution = bossCombat.combat(currentTile.getBoss(),player)
                             if combatResolution == "W":
-                                playerWins(board,player)
+                                playerWon = True
                                 break
                             elif combatResolution == "L":
-                                playerLoses(player)
+                                playerLost = True
                                 break
                         else:
+                            print("You are not yet strong enough to face the boss, you must prove your mettle against at least 5 enemies first")
                             moveAway(board,player)
                     elif isinstance(currentTile,gameObjects.AnomalyTile):
                         anomaly = currentTile.getAnomaly()
                         player = encounter.main(anomaly,player)
                         board.setTile(newCoord[0],newCoord[1],gameObjects.MapTile(playerOcc = True))
+                elif playerChoice == I:
+                    player,curTurn = items.inventory(player)
                 elif playerChoice == Q:
                     print("Press Q to quit immediately or S to save first")
                     playerChoice = ord(getch())
                     if playerChoice == Q:
-                        #command to close window
-                        pass
+                        break
                     elif playerChoice == S:
                         save(board,player)
                 elif playerChoice == S:
@@ -370,6 +375,22 @@ def main():
                     #warns the player to save first [Q] to quit, [S] to save
                         #if they choose to save, run the save function
                  #else terminate the program.
+        if playerWon == True:
+            system("cls")
+            print("You have emerged victorious from a dangerous galaxy")
+            time.sleep(2)
+            print("By defeating the galactic boss you have earned the praises of all who know you, rest well hero")
+            time.sleep(2)
+            print("Your Final Stats")
+            print("-------------")
+            print(player.getStats())
+            time.sleep(10)
+        elif playerLost == True:
+            print("You have fallen to the evils of the galaxy")
+            print("Fare thee well in the next life")
+            time.sleep(10)
+        else:
+            pass
     except Exception as e:
         logging.basicConfig(filename='app.log',level=logging.INFO)
         logging.exception(e)
