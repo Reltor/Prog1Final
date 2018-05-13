@@ -256,8 +256,9 @@ def main():
         Q = 113
         S = 115
         I = 105
+        D = 100
         T = 116
-        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I,T,224]
+        ordList = [SPECIALCHAR,UP,DOWN,LEFT,RIGHT,Q,S,I,D,T,224]
         system("cls")
         print("On the following map, you are marked as a 'P', enemies are 'E', various spacial anomalies are 'A' and your final challenge is marked as 'B'")
         time.sleep(5)
@@ -265,7 +266,7 @@ def main():
         #check if the player has won, or is dead. if either is true move to the appropriate endGame function, else move on
             system("cls")
             print(board.printBasicBoard())
-            print("Use the Arrow Keys to move, Q to Quit, S to Save or I to access inventory: ")
+            print("Use the Arrow Keys to move, Q to Quit, S to Save, I to access inventory, or D to access stats: ")
 
             currentLoc = player.getLoc()
             startTile = board.getBoard()[currentLoc[1]-1][currentLoc[0]-1]
@@ -324,6 +325,10 @@ def main():
                     #command to close window
                 elif playerChoice == I:
                     player.useItem()
+                elif playerChoice == D:
+                    player.getStats()
+                    print("------------")
+                    input("Press Enter to Continue")
                 elif playerChoice == T:
                     player.getStats()
                     print("Press Any Key to Continue...")
